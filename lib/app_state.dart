@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 
 class DvAppState extends ChangeNotifier {
-  var current = "";
+  var currentPage = 0;
+  var previousPage = 0;
 
   var favorites = <String>[];
 
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
-    } else {
-      favorites.add(current);
-    }
+  void globalPage(int page) {
+    previousPage = currentPage;
+    currentPage = page;
     notifyListeners();
   }
 
   void getNext() {
-    current = "";
+    currentPage++;
     notifyListeners();
   }
 }
-
