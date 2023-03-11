@@ -1,11 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'app_state.dart';
-import 'homepage/home_page.dart';
-import 'gallery_page.dart';
+import 'general_page.dart';
+import 'routing.dart';
+import 'screens/routing_path.dart';
+import 'auth/auth.dart';
 
-class DvdMainApp extends StatelessWidget {
+class DvdMainApp extends StatefulWidget {
   const DvdMainApp({super.key});
+
+  @override
+  State<DvdMainApp> createState() => _DvdMainAppState();
+}
+
+class _DvdMainAppState extends State<DvdMainApp> {
+  final _auth = DvdAuth();
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  late final RouteState _routeState;
+  late final SimpleRouterDelegate _routerDelegate;
+  late final TemplateRouteParser _routeParser;
+
+  @override
+  void initState() {
+    /// Configure the parser with all of the app's allowed path templates.
+    _routeParser = TemplateRouteParser(
+      allowedPaths: routingPathAllowed,
+      guard: _guard,
+      initialRoute: routingPathInitial,
+    );
+
+    _routerDelegate = SimpleRouterDelegate(
+      routeState: _routeState,
+      navigatorKey: _navigatorKey,
+      builder: (context) => BookstoreNavigator(
+        navigatorKey: _navigatorKey,
+      ),
+    );
+
+    _auth.addListener(_handleAuthStateChanged);
+
+    _routeState = RouteState(_routeParser);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,61 +57,36 @@ class DvdMainApp extends StatelessWidget {
       ),
     );
   }
-}
 
-class GeneralPagePool extends StatefulWidget {
-  @override
-  State<GeneralPagePool> createState() => _GeneralPagePoolState();
-}
+  Future<ParsedRoute> _guard(ParsedRoute from) async {
+    final signedIn = _auth.signedIn;
+    final signInRoute =
+        ParsedRoute(routingPathSignIn, routingPathSignIn, {}, {});
 
-class _GeneralPagePoolState extends State<GeneralPagePool> {
-  var selectedIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = DvdHomePage();
-        break;
-      case 1:
-        page = DvdGalleryPage();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
+    // Go to /signin if the user is not signed in
+    if (!signedIn && from != signInRoute) {
+      return signInRoute;
     }
-    return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-            child: NavigationRail(
-              extended: false,
-              destinations: [
-                NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text('Home'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.favorite),
-                  label: Text('Gallery'),
-                ),
-              ],
-              selectedIndex: selectedIndex,
-              onDestinationSelected: (value) {
-                setState(() {
-                  selectedIndex = value;
-                });
-              },
-            ),
-          ),
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: page,
-            ),
-          ),
-        ],
-      ),
-    );
+    // Go to first if the user is signed in and tries to go to /signin.
+    else if (signedIn && from == signInRoute) {
+      return ParsedRoute(
+          routingPathFirstForSigned, routingPathFirstForSigned, {}, {});
+    }
+
+    return from;
+  }
+
+  void _handleAuthStateChanged() {
+    if (!_auth.signedIn) {
+      _routeState.go(routingPathSignIn);
+    }
+  }
+
+  @override
+  void dispose() {
+    _auth.removeListener(_handleAuthStateChanged);
+    _routeState.dispose();
+    _routerDelegate.dispose();
+    super.dispose();
   }
 }
