@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:postcreator/auth/sign_manager.dart';
 import 'package:postcreator/screens/routing_path.dart';
 
-import '../auth/auth.dart';
 import '../routing.dart';
-import '../screens/sign_in.dart';
 import 'fade_transition_page.dart';
+import 'scaffold.dart';
 
 /// Builds the top-level navigator for the app. The pages to display are based
 /// on the `routeState` that was parsed by the TemplateRouteParser.
@@ -30,7 +29,6 @@ class _DvdAppNavigatorState extends State<DvdAppNavigator> {
   @override
   Widget build(BuildContext context) {
     final routeState = RouteStateScope.of(context);
-    final authState = BookstoreAuthScope.of(context);
     final pathTemplate = routeState.route.pathTemplate;
 
     return Navigator(
@@ -40,25 +38,25 @@ class _DvdAppNavigatorState extends State<DvdAppNavigator> {
         // the /books or /authors tab in BookstoreScaffold.
         if (route.settings is Page &&
             (route.settings as Page).key == _bookDetailsKey) {
-          routeState.go('/books/popular');
+          routeState.go('/home');
         }
 
         if (route.settings is Page &&
             (route.settings as Page).key == _authorDetailsKey) {
-          routeState.go('/authors');
+          routeState.go('/home');
         }
 
         return route.didPop(result);
       },
       pages: [
         if (pathTemplate == routingPathSignIn)
-          getSignManager()
+          getSignManager(context)
         // Display the sign in screen.
         else ...[
           // Display the app
           FadeTransitionPage<void>(
             key: _scaffoldKey,
-            child: const BookstoreScaffold(),
+            child: const DvdAppScaffold(),
           ),
         ],
       ],

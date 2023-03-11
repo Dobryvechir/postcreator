@@ -1,4 +1,3 @@
-
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:flutter/material.dart';
 
@@ -21,8 +20,8 @@ class DvdAppScaffold extends StatelessWidget {
         body: const DvdAppScaffoldBody(),
         onDestinationSelected: (idx) {
           if (idx == 0) routeState.go('/home');
-          if (idx == 1) routeState.go('/authors');
-          if (idx == 2) routeState.go('/settings');
+          if (idx == 1) routeState.go('/home/text');
+          if (idx == 2) routeState.go('/home/image');
         },
         destinations: const [
           AdaptiveScaffoldDestination(
@@ -43,9 +42,9 @@ class DvdAppScaffold extends StatelessWidget {
   }
 
   int _getSelectedIndex(String pathTemplate) {
-    if (pathTemplate.startsWith('/books')) return 0;
-    if (pathTemplate == '/authors') return 1;
-    if (pathTemplate == '/settings') return 2;
+    if (pathTemplate.startsWith('/home')) return 0;
+    if (pathTemplate == '/home/text') return 1;
+    if (pathTemplate == '/home/image') return 2;
     return 0;
   }
 }

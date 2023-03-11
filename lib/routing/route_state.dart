@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 
 import 'parsed_route.dart';
 import 'parser.dart';
+import 'route_info.dart';
 
 /// The current route state. To change the current route, call obtain the state
 /// using `RouteStateScope.of(context)` and call `go()`:
@@ -27,6 +28,22 @@ class RouteState extends ChangeNotifier {
 
     _route = route;
     notifyListeners();
+  }
+
+  List<Widget> getPrimary(BuildContext context) {
+    RouteInfo? info = _parser.getRouteInfoByPathTemplate(_route.pathTemplate);
+    if (info == null) {
+      return [];
+    }
+    return info.primary(context);
+  }
+
+  String getKeyName() {
+    RouteInfo? info = _parser.getRouteInfoByPathTemplate(_route.pathTemplate);
+    if (info == null) {
+      return '';
+    }
+    return info.name;
   }
 
   Future<void> go(String route) async {

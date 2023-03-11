@@ -5,6 +5,7 @@ import 'general_page.dart';
 import 'routing.dart';
 import 'screens/routing_path.dart';
 import 'auth/auth.dart';
+import 'screens/navigator.dart';
 
 class DvdMainApp extends StatefulWidget {
   const DvdMainApp({super.key});
@@ -24,7 +25,7 @@ class _DvdMainAppState extends State<DvdMainApp> {
   void initState() {
     /// Configure the parser with all of the app's allowed path templates.
     _routeParser = TemplateRouteParser(
-      allowedPaths: routingPathAllowed,
+      allowedPaths: routingPathMap,
       guard: _guard,
       initialRoute: routingPathInitial,
     );
@@ -32,7 +33,7 @@ class _DvdMainAppState extends State<DvdMainApp> {
     _routerDelegate = SimpleRouterDelegate(
       routeState: _routeState,
       navigatorKey: _navigatorKey,
-      builder: (context) => BookstoreNavigator(
+      builder: (context) => DvdAppNavigator(
         navigatorKey: _navigatorKey,
       ),
     );

@@ -4,6 +4,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'route_info.dart';
 
 import 'parsed_route.dart';
 
@@ -12,13 +13,13 @@ typedef RouteGuard<T> = Future<T> Function(T from);
 
 /// Parses the URI path into a [ParsedRoute].
 class TemplateRouteParser extends RouteInformationParser<ParsedRoute> {
-  final List<String> _pathTemplates;
+  final Map<String, RouteInfo> _pathTemplates;
   final RouteGuard<ParsedRoute>? guard;
   final ParsedRoute initialRoute;
 
   TemplateRouteParser({
     /// The list of allowed path templates (['/', '/users/:id'])
-    required List<String> allowedPaths,
+    required Map<String, RouteInfo> allowedPaths,
 
     /// The initial route
     String initialRoute = '/',
@@ -26,10 +27,8 @@ class TemplateRouteParser extends RouteInformationParser<ParsedRoute> {
     ///  [RouteGuard] used to redirect.
     this.guard,
   })  : initialRoute = ParsedRoute(initialRoute, initialRoute, {}, {}),
-        _pathTemplates = [
-          ...allowedPaths,
-        ],
-        assert(allowedPaths.contains(initialRoute));
+        _pathTemplates = allowedPaths,
+        assert(allowedPaths.containsKey(initialRoute));
 
   @override
   Future<ParsedRoute> parseRouteInformation(
@@ -39,7 +38,7 @@ class TemplateRouteParser extends RouteInformationParser<ParsedRoute> {
     final queryParams = Uri.parse(path).queryParameters;
     var parsedRoute = initialRoute;
 
-    for (var pathTemplate in _pathTemplates) {
+    for (var pathTemplate in _pathTemplates.keys) {
       final parameters = <String>[];
       var pathRegExp = pathToRegExp(pathTemplate, parameters: parameters);
       if (pathRegExp.hasMatch(path)) {
@@ -57,6 +56,10 @@ class TemplateRouteParser extends RouteInformationParser<ParsedRoute> {
     }
 
     return parsedRoute;
+  }
+
+  RouteInfo? getRouteInfoByPathTemplate(String pathTemplate) {
+    return _pathTemplates[pathTemplate];
   }
 
   @override
