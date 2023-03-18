@@ -5,7 +5,7 @@ import '../app_state.dart';
 class ArtStartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<DvAppState>();
+    // var appState = context.watch<DvAppState>();
 
     return Scaffold(
       body: Center(

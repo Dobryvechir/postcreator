@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:postcreator/utils/image_calc.dart';
-import 'package:postcreator/utils/image_params.dart';
-import 'package:postcreator/utils/page_names.dart';
-import 'package:postcreator/utils/page_utils.dart';
-import 'package:provider/provider.dart';
-import '../app_state.dart';
+import '../utils/page_utils.dart';
 import '../utils/image_params.dart';
 import '../utils/image_calc.dart';
+import '../routing.dart';
 
 class HomeMainWidget extends StatelessWidget {
+  const HomeMainWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     const imageXextra = 10;
     const imageYextra = 25;
-    var appState = context.watch<DvAppState>();
+    // var appState = context.watch<DvAppState>();
     int boxX = MediaQuery.of(context).size.width.floor() - imageXextra;
     int boxY = MediaQuery.of(context).size.height.floor() - imageYextra;
     int coord =
@@ -25,11 +23,11 @@ class HomeMainWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Choose image/video/audio/text and create a post'),
-            SizedBox(height: 5),
+            const Text('Choose image/video/audio/text and create a post'),
+            const SizedBox(height: 5),
             GestureDetector(
               child: Image(
-                  image: ResizeImage(AssetImage(artPuzzleAssetName),
+                  image: ResizeImage(const AssetImage(artPuzzleAssetName),
                       width: imageWidth, height: imageHeight)),
               onTapDown: (TapDownDetails details) {
                 int pageNo = calculateSelectedPage(
@@ -41,8 +39,11 @@ class HomeMainWidget extends StatelessWidget {
                     details.localPosition.dy,
                     artPuzzleBlocks);
                 print(
-                    "Location ${pageNo} ${details.localPosition.dx},${details.localPosition.dy}");
-                int page = page2level(homePage, pageNo);
+                    "Location $pageNo ${details.localPosition.dx},${details.localPosition.dy}");
+                String route = pageHomeRoute(pageNo);
+                if (route.isNotEmpty) {
+                  RouteStateScope.of(context).go(route);
+                }
               },
             ),
           ],
