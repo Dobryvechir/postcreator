@@ -1,16 +1,27 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'mob_html_editor.dart';
 import 'alt_html_editor.dart';
 import 'dart:io' show Platform;
 
 class UbiHtmlEditorWidget extends StatelessWidget {
-  const UbiHtmlEditorWidget({super.key});
+  final int status;
+  final ValueSetter<String> changer;
+
+  const UbiHtmlEditorWidget(
+      {super.key, required this.status, required this.changer});
 
   @override
   Widget build(BuildContext context) {
     if (Platform.isWindows) {
-      return const AltHtmlEditorWidget();
+      return AltHtmlEditorWidget(
+        status: status,
+        changer: changer,
+      );
     }
-    return const MobHtmlEditorWidget();
+    return MobHtmlEditorWidget(
+      status: status,
+      changer: changer,
+    );
   }
 }

@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.0"
+  csslib:
+    dependency: transitive
+    description:
+      name: csslib
+      sha256: b36c7f7e24c0bdf1bf9a3da461c837d1de64b9f8beb190c9011d8c72a3dfd745
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.17.2"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -192,6 +200,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  html:
+    dependency: "direct main"
+    description:
+      name: html
+      sha256: "79d498e6d6761925a34ee5ea8fa6dfef38607781d2fa91e37523474282af55cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.2"
   html_editor_enhanced:
     dependency: "direct main"
     description:
@@ -257,7 +273,7 @@ packages:
     source: hosted
     version: "1.0.0"
   notus_format:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: notus_format
       sha256: c3905a83a7106cc6b0986d097ca11dec71e20434d05a0e911c0ddb12baf838eb
@@ -321,7 +337,7 @@ packages:
     source: hosted
     version: "6.0.5"
   quill_format:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: quill_format
       sha256: f0b276ac31f5712b629e746186181f6a4e332c9c6f7687e57101d9cca8cab689

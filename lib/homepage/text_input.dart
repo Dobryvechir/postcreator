@@ -11,6 +11,8 @@ class TextInputWidget extends StatefulWidget {
 }
 
 class _TextInputWidgetState extends State<TextInputWidget> {
+  int status = 0;
+
   @override
   Widget build(BuildContext context) {
     // var appState = context.watch<DvAppState>();
@@ -24,12 +26,18 @@ class _TextInputWidgetState extends State<TextInputWidget> {
             padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
             child: Column(
               children: [
-                const UbiHtmlEditorWidget(),
+                UbiHtmlEditorWidget(
+                  status: status,
+                  changer: (String data) => {},
+                ),
                 ElevatedButton(
                     onPressed: () async {
+                      setState(() {
+                        status = 1;
+                      });
                       // String data = await controller.getText();
                     },
-                    child: Text("OK"))
+                    child: const Text("OK"))
               ],
             )));
   }
