@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './home_app_start.dart';
 import 'package:provider/provider.dart';
 import '../app_state.dart';
 import '../ubihtmleditor/ubi_html_editor.dart';
@@ -15,7 +16,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // var appState = context.watch<DvAppState>();
+    var appState = context.watch<DvAppState>();
 
     return Scaffold(
         appBar: AppBar(
@@ -28,16 +29,26 @@ class _TextInputWidgetState extends State<TextInputWidget> {
               children: [
                 UbiHtmlEditorWidget(
                   status: status,
-                  changer: (String data) => {},
+                  changer: (String data) {
+                    appState.setProperty(homePagePrefix, textInfo, data);
+                    setState(() {
+                      status = 2;
+                    });
+                  },
                 ),
-                ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        status = 1;
-                      });
-                      // String data = await controller.getText();
-                    },
-                    child: const Text("OK"))
+                Row(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            status = 1;
+                          });
+                        },
+                        child: const Text("OK")),
+                    FlatButton(
+                        onPressed: () async {}, child: const Text("Cancel"))
+                  ],
+                ),
               ],
             )));
   }

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
 class DvAppState extends ChangeNotifier {
-  var currentPage = 0;
-  var previousPage = 0;
+  var prefixedProperties = <String, String>{};
 
-  var favorites = <String>[];
-
-  void globalPage(int page) {
-    previousPage = currentPage;
-    currentPage = page;
+  void setPropertySilently(String prefix, String key, String value) {
+    String k = "${prefix}_$key";
+    prefixedProperties[k] = value;
     notifyListeners();
   }
 
-  void getNext() {
-    currentPage++;
+  void setProperty(String prefix, String key, String value) {
+    setPropertySilently(prefix, key, value);
     notifyListeners();
+  }
+
+  String? getProperty(String prefix, String key) {
+    String k = "${prefix}_$key";
+    return prefixedProperties[k];
   }
 }

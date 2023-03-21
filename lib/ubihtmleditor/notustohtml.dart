@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
-import 'package:notus/notus.dart';
-import 'package:quill_delta/quill_delta.dart';
+import 'package:notus_format/notus_format.dart';
+import 'package:quill_format/quill_format.dart';
 
 class NotusHtmlCodec extends Codec<Delta, String> {
   const NotusHtmlCodec();

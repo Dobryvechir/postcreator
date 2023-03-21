@@ -15,7 +15,7 @@ class DvdHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<DvAppState>();
-    var selectedWidget = secondaryPage(appState.currentPage);
+    var selectedWidget = 0;
     Widget page;
     switch (selectedWidget) {
       case 0:
