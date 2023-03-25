@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
 class MobHtmlEditorWidget extends StatefulWidget {
-  final int status;
-  final ValueSetter<String> changer;
+  final ValueSetter<Function> changer;
 
-  const MobHtmlEditorWidget(
-      {super.key, required this.status, required this.changer});
+  const MobHtmlEditorWidget({super.key, required this.changer});
 
   @override
   State<MobHtmlEditorWidget> createState() => _MobHtmlEditorWidgetState();
@@ -16,11 +14,15 @@ class MobHtmlEditorWidget extends StatefulWidget {
 class _MobHtmlEditorWidgetState extends State<MobHtmlEditorWidget> {
   HtmlEditorController controller = HtmlEditorController();
 
+  _MobHtmlEditorWidgetState() {
+    widget.changer(() async {
+      var a = await controller.getText();
+      return a;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.status == 1) {
-      controller.getText().then(widget.changer);
-    }
     return HtmlEditor(
       controller: controller, //required
       htmlEditorOptions: const HtmlEditorOptions(

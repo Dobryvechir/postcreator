@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'app_state.dart';
-import 'general_page.dart';
 import 'routing.dart';
 import 'screens/routing_path.dart';
 import 'auth/auth.dart';
@@ -53,6 +51,7 @@ class _DvdMainAppState extends State<DvdMainApp> {
           child: MaterialApp.router(
             routerDelegate: _routerDelegate,
             routeInformationParser: _routeParser,
+
             // Revert back to pre-Flutter-2.5 transition behavior:
             // https://github.com/flutter/flutter/issues/82053
             theme: ThemeData(

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../app_state.dart';
 import 'app.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   // web - #, others - does not matter
@@ -14,11 +15,12 @@ void main() {
   // alternative: setPathUrlStrategy();
 
   setupWindow();
-  runApp(Provider<DvAppState>(
+  runApp(ListenableProvider<DvAppState>(
     create: (_) => DvAppState(),
     child: const MaterialApp(
       title: 'Localizations Sample App',
       localizationsDelegates: [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -32,6 +34,8 @@ void main() {
         Locale('pl'), // Polish
         Locale('it'), // Italian
         Locale('ru'), // Russian
+        Locale('nb'), // Norwegian norsk
+        Locale('pt'), // Portuguese português
       ],
       home: DvdMainApp(),
     ),

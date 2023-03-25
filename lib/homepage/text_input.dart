@@ -3,6 +3,7 @@ import './home_app_start.dart';
 import 'package:provider/provider.dart';
 import '../app_state.dart';
 import '../ubihtmleditor/ubi_html_editor.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TextInputWidget extends StatefulWidget {
   const TextInputWidget({super.key});
@@ -12,12 +13,15 @@ class TextInputWidget extends StatefulWidget {
 }
 
 class _TextInputWidgetState extends State<TextInputWidget> {
-  int status = 0;
+  late Function valuer;
 
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<DvAppState>();
-
+    var messager = AppLocalizations.of(context) ??
+        lookupAppLocalizations(Locale(appState.defLocale));
+    var messageOk = messager.ok;
+    var messageCancel = messager.cancel;
     return Scaffold(
         appBar: AppBar(
           title: const Text("Provide your text for the post"),
@@ -28,25 +32,30 @@ class _TextInputWidgetState extends State<TextInputWidget> {
             child: Column(
               children: [
                 UbiHtmlEditorWidget(
-                  status: status,
-                  changer: (String data) {
-                    appState.setProperty(homePagePrefix, textInfo, data);
-                    setState(() {
-                      status = 2;
-                    });
+                  changer: (Function data) {
+                    valuer = data;
                   },
                 ),
                 Row(
                   children: [
                     ElevatedButton(
                         onPressed: () async {
-                          setState(() {
-                            status = 1;
-                          });
+                          String value = await valuer();
+                          appState.setProperty(homePagePrefix, textInfo, value);
+                          Navigator.pop(context);
                         },
-                        child: const Text("OK")),
-                    FlatButton(
-                        onPressed: () async {}, child: const Text("Cancel"))
+                        child: Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Text(messageOk),
+                        )),
+                    OutlinedButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Text(messageCancel),
+                        ))
                   ],
                 ),
               ],
