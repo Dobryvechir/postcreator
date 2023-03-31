@@ -1,4 +1,10 @@
 {
-  "ok": "Ok",
+  "audio": "Audio",
   "cancel": "Anulować"
+  "image": "Obraz",
+  "ok": "Ok",
+  "source": "Żródło",
+  "title": "Tytuł",
+  "url": "Adres URL",
+  "video": "Wideo"
 }

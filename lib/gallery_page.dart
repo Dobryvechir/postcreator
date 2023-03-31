@@ -13,9 +13,8 @@ class DvdGalleryPage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: const [
             Text('Gallery page:'),
-            SizedBox(height: 100),
             SizedBox(height: 100),
           ],
         ),
