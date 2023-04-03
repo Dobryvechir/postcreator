@@ -1,8 +1,11 @@
 {
   "audio": "Lyd",
   "cancel": "Avbryt",
+  "chooseTextImageAudioVideoCreatePost": "Velg tekst, bilde, lyd, video og lag innlegget",
+  "fillIn": "Fyll",
   "image": "Bilde",
   "ok": "Ok",
+  "provideTextForPost": "Oppgi teksten til innlegget",
   "source": "Kilde",
   "title": "Tittel",
   "url": "Url",

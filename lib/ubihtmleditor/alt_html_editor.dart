@@ -14,7 +14,9 @@ class AltHtmlEditorWidget extends StatefulWidget {
 class _AltHtmlEditorWidgetState extends State<AltHtmlEditorWidget> {
   final ZefyrController _controller = ZefyrController();
 
-  _AltHtmlEditorWidgetState() {
+  @override
+  void initState() {
+    super.initState();
     widget.changer(() {
       var converter = const NotusHtmlCodec();
       String html = converter.encode(_controller.document.toDelta());

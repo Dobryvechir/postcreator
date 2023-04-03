@@ -1,8 +1,11 @@
 {
   "audio": "Audio",
   "cancel": "Cancel",
+  "chooseTextImageAudioVideoCreatePost": "Choose text/image/audio/video and create your post",
+  "fillIn": "Fill In",
   "image": "Image",
   "ok": "Ok",
+  "provideTextForPost": "Provide your text for the post",
   "source": "Source",
   "title": "Title",
   "url": "Url",

@@ -1,10 +1,13 @@
 {
   "audio": "Аудио",
   "cancel": "Отмена",
+  "chooseTextImageAudioVideoCreatePost": "Подберите текст,рисунок,аудио,видео и создайте пост",
+  "fillIn": "Заполните",
   "image": "Рисунок",
   "ok": "Ok",
+  "provideTextForPost": "Составьте текст для поста",
   "source": "Источник",
   "title": "Название",
-  "url": "Url",
+  "url": "Адрес Url",
   "video": "Видео"
 }

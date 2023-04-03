@@ -1,8 +1,11 @@
 {
   "audio": "Ήχος",
   "cancel": "Ματαίωση",
+  "chooseTextImageAudioVideoCreatePost": "Επιλέξτε κείμενο, εικόνα, ήχο, βίντεο και δημιουργήστε την ανάρτησή",
+  "fillIn": "Συμπλήρωσε",
   "image": "Εικόνα",
   "ok": "Εντάξει",
+  "provideTextForPost": "Δώστε το κείμενό σας για την ανάρτηση",
   "source": "Πηγή",
   "title": "Τίτλος",
   "url": "Url",

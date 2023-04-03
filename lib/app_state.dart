@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class DvAppState extends ChangeNotifier {
   var prefixedProperties = <String, String>{};
-  var defLocale = 'en';
+  var defLocale = 'uk';
 
   void setProperty(String prefix, String key, String value) {
     String k = "${prefix}_$key";

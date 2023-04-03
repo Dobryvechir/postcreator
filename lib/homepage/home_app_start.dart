@@ -1,12 +1,12 @@
 const textInfo = 'textInfo';
 const imageUrl = 'imageUrl';
-const imageAuthor = 'imageAuthor';
+const imageTitle = 'imageTitle';
 const imageSource = 'imageSource';
 const audioUrl = 'audioUrl';
-const audioAuthor = 'audioAuthor';
+const audioTitle = 'audioTitle';
 const audioSource = 'audioSource';
 const videoUrl = 'videoUrl';
-const videoAuthor = 'videoAuthor';
+const videoTitle = 'videoTitle';
 const videoSource = 'videoSource';
 
 const homePagePrefix = 'homepage';
@@ -14,12 +14,12 @@ const homePagePrefix = 'homepage';
 const homePageAppState = [
   textInfo,
   imageUrl,
-  imageAuthor,
+  imageTitle,
   imageSource,
   audioUrl,
-  audioAuthor,
+  audioTitle,
   audioSource,
   videoUrl,
-  videoAuthor,
+  videoTitle,
   videoSource,
 ];

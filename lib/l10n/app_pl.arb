@@ -1,8 +1,11 @@
 {
   "audio": "Audio",
-  "cancel": "Anulować"
+  "cancel": "Anulować",
+  "chooseTextImageAudioVideoCreatePost": "Wybierz tekst, obraz, audio, wideo i utwórz post",
+  "fillIn": "Wypełnij",
   "image": "Obraz",
   "ok": "Ok",
+  "provideTextForPost": "Podaj tekst posta",
   "source": "Żródło",
   "title": "Tytuł",
   "url": "Adres URL",

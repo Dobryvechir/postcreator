@@ -1,10 +1,13 @@
 {
   "audio": "Аудіо",
   "cancel": "Відміна",
-  "image": "Зображення"
+  "chooseTextImageAudioVideoCreatePost": "Підберіть текст, малюнок, аудіо, відео та утворіть пост",
+  "fillIn": "Заповніть",
+  "image": "Зображення",
   "ok": "Ok",
+  "provideTextForPost": "Створіть текст для поста",
   "source": "Джерело",
   "title": "Назва",
-  "url": "Url",
+  "url": "Адреса Url",
   "video": "Відео"
-}
+}                      

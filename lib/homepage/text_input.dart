@@ -20,12 +20,10 @@ class _TextInputWidgetState extends State<TextInputWidget> {
     var appState = context.watch<DvAppState>();
     var messager = AppLocalizations.of(context) ??
         lookupAppLocalizations(Locale(appState.defLocale));
-    var messageOk = messager.ok;
-    var messageCancel = messager.cancel;
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Provide your text for the post"),
-          backgroundColor: Colors.redAccent,
+          title: Text(messager.provideTextForPost),
+          backgroundColor: Colors.blueAccent,
         ),
         body: Container(
             padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -36,25 +34,30 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                     valuer = data;
                   },
                 ),
+                const SizedBox(height: 10),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                        onPressed: () async {
-                          String value = await valuer();
-                          appState.setProperty(homePagePrefix, textInfo, value);
-                          Navigator.pop(context);
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(12),
-                          child: Text(messageOk),
-                        )),
+                    ButtonTheme(
+                        minWidth: 100,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              String value = await valuer();
+                              appState.setProperty(
+                                  homePagePrefix, textInfo, value);
+                              Navigator.pop(context);
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Text(messager.ok),
+                            ))),
                     OutlinedButton(
                         onPressed: () async {
                           Navigator.pop(context);
                         },
                         child: Padding(
                           padding: EdgeInsets.all(12),
-                          child: Text(messageCancel),
+                          child: Text(messager.cancel),
                         ))
                   ],
                 ),

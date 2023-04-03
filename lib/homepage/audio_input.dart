@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../app_state.dart';
+import './home_app_start.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AudioInputWidget extends StatefulWidget {
   @override
@@ -14,9 +16,14 @@ class _AudioInputWidgetState extends State<AudioInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // var appState = context.watch<DvAppState>();
-
+    var appState = context.watch<DvAppState>();
+    var messager = AppLocalizations.of(context) ??
+        lookupAppLocalizations(Locale(appState.defLocale));
     return Scaffold(
+      appBar: AppBar(
+        title: Text(messager.fillIn),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Center(
         child: Card(
           child: Container(
@@ -26,30 +33,49 @@ class _AudioInputWidgetState extends State<AudioInputWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Audio',
+                Text(messager.audio,
                     style: Theme.of(context).textTheme.headlineMedium),
                 TextField(
-                  decoration: const InputDecoration(labelText: 'Url'),
+                  decoration: InputDecoration(labelText: messager.url),
                   controller: _urlController,
                 ),
                 TextField(
-                  decoration: const InputDecoration(labelText: 'Source'),
+                  decoration: InputDecoration(labelText: messager.source),
                   controller: _sourceController,
                 ),
                 TextField(
-                  decoration: const InputDecoration(labelText: 'Title'),
+                  decoration: InputDecoration(labelText: messager.title),
                   controller: _titleController,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: TextButton(
-                    onPressed: () async {
-                      widget.onSignIn(Credentials(
-                          _usernameController.value.text,
-                          _passwordController.value.text));
-                    },
-                    child: const Text('Ok'),
-                  ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ButtonTheme(
+                        minWidth: 100,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              appState.setProperty(homePagePrefix, audioUrl,
+                                  _urlController.value.text);
+                              appState.setProperty(homePagePrefix, audioSource,
+                                  _sourceController.value.text);
+                              appState.setProperty(homePagePrefix, audioTitle,
+                                  _titleController.value.text);
+                              Navigator.pop(context);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Text(messager.ok),
+                            ))),
+                    OutlinedButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(messager.cancel),
+                        ))
+                  ],
                 ),
               ],
             ),

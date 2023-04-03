@@ -14,7 +14,9 @@ class MobHtmlEditorWidget extends StatefulWidget {
 class _MobHtmlEditorWidgetState extends State<MobHtmlEditorWidget> {
   HtmlEditorController controller = HtmlEditorController();
 
-  _MobHtmlEditorWidgetState() {
+  @override
+  void initState() {
+    super.initState();
     widget.changer(() async {
       var a = await controller.getText();
       return a;
