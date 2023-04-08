@@ -1,0 +1,86 @@
+1. Cabinet functionality
+there are 7 entities
+  0. Enterprise
+      Id
+      Name
+      BaseCurrency
+  1. Customers
+      Id
+      Enterprise
+      Name
+      Phone
+      Info
+      Balance
+      Closed
+  2. Person = Personnel & Manager [Role='Manager']
+      Id
+      Enterprise
+      Name
+      Phone
+      Info
+      Balance
+      Roles 
+  3. Premises
+      Id
+      Enterprise
+      Name
+      Info
+      Cost
+  5. Services
+      Id
+      Enterprise
+      Name
+      Info
+      Cost
+  6. Timetable
+      Id
+      Enterprise
+      Date
+      TimeFrom (hours *60 + minutes)
+      TimeLength (hours * 60 + minutes)
+      PremiseId
+      ServiceId
+      PersonId
+  7. Slips
+      Id
+      Enterprise
+      Date + Time
+      From
+      To
+      Amount
+      CurrencyId
+      ActionId
+  8. Actions
+      Id
+      Enterprise
+      Date + Time
+      ActorId
+      TimetableId
+      Amount
+      CurrencyId
+  9. Currency
+      Id
+      Name
+      RateToCurrency
+      Date 
+Options:
+Each personnel has options to make entries for each of them
+Each cabinet
+The currency operations are crypted as crypto currencies for each year
+At the new year, information for next to last year is removed
+Enterprise field is not stored, but tables start with enterpriseName + year + _ <name>
+Think how to arrange the database storage so that nobody having the physical access to the database
+is not able to decrypt it:
+A person has all amounts related to it in its device, so it does not need the financial information
+A person's device sends all information as encrypted messages, which nobody is able to read
+These encrypted messages are stored at the server, manager just reads those encrypted messages from
+each user and encrypts on his own computer.
+The manager has its own storages on its own computers, optionally encrypted on his google disk or
+another disk.
+He separately has a key to those encryption, encoded with a password and stored on other devices (maybe on 
+the flash or other means of storage).
+
+ 
+
+
+ 

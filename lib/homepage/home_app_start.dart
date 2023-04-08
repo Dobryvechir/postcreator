@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+
+import '../routing/route_state.dart';
+
 const textInfo = 'textInfo';
 const imageUrl = 'imageUrl';
 const imageTitle = 'imageTitle';
@@ -23,3 +27,19 @@ const homePageAppState = [
   videoTitle,
   videoSource,
 ];
+
+void popArtRoute(BuildContext context) {
+  var route = '/home';
+  Navigator.of(context).pop();
+  RouteStateScope.of(context).go(route);
+}
+
+List<Object> popArtRoute1of2Step(BuildContext context) {
+  return [Navigator.of(context), RouteStateScope.of(context)];
+}
+
+void popArtRoute2of2Step(List<Object> lst) {
+  var route = '/home';
+  (lst[0] as NavigatorState).pop();
+  (lst[1] as RouteState).go(route);
+}

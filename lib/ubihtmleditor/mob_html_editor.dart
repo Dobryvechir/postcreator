@@ -1,11 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 
 class MobHtmlEditorWidget extends StatefulWidget {
   final ValueSetter<Function> changer;
+  final String initialText;
 
-  const MobHtmlEditorWidget({super.key, required this.changer});
+  const MobHtmlEditorWidget(
+      {super.key, required this.changer, required this.initialText});
 
   @override
   State<MobHtmlEditorWidget> createState() => _MobHtmlEditorWidgetState();
@@ -21,6 +22,9 @@ class _MobHtmlEditorWidgetState extends State<MobHtmlEditorWidget> {
       var a = await controller.getText();
       return a;
     });
+    if (widget.initialText != '') {
+      controller.setText(widget.initialText);
+    }
   }
 
   @override

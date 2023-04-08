@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../app_state.dart';
 
 class ArtStartWidget extends StatelessWidget {
   @override
@@ -11,7 +9,7 @@ class ArtStartWidget extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: const [
             Text('Art Start:'),
             SizedBox(height: 100),
             SizedBox(height: 100),

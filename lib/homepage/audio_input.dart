@@ -5,6 +5,8 @@ import './home_app_start.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AudioInputWidget extends StatefulWidget {
+  const AudioInputWidget({super.key});
+
   @override
   State<AudioInputWidget> createState() => _AudioInputWidgetState();
 }
@@ -13,12 +15,37 @@ class _AudioInputWidgetState extends State<AudioInputWidget> {
   final _urlController = TextEditingController();
   final _sourceController = TextEditingController();
   final _titleController = TextEditingController();
+  var _initial = true;
 
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<DvAppState>();
     var messager = AppLocalizations.of(context) ??
         lookupAppLocalizations(Locale(appState.defLocale));
+    if (_initial) {
+      _initial = false;
+      final url = appState.getProperty(homePagePrefix, audioUrl) ?? '';
+      final source = appState.getProperty(homePagePrefix, audioSource) ?? '';
+      final title = appState.getProperty(homePagePrefix, audioTitle) ?? '';
+      _urlController.value = TextEditingValue(
+        text: url,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: url.length),
+        ),
+      );
+      _sourceController.value = TextEditingValue(
+        text: source,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: source.length),
+        ),
+      );
+      _titleController.value = TextEditingValue(
+        text: title,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: title.length),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(messager.fillIn),
@@ -61,7 +88,7 @@ class _AudioInputWidgetState extends State<AudioInputWidget> {
                                   _sourceController.value.text);
                               appState.setProperty(homePagePrefix, audioTitle,
                                   _titleController.value.text);
-                              Navigator.pop(context);
+                              popArtRoute(context);
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(12),
@@ -69,7 +96,7 @@ class _AudioInputWidgetState extends State<AudioInputWidget> {
                             ))),
                     OutlinedButton(
                         onPressed: () async {
-                          Navigator.pop(context);
+                          popArtRoute(context);
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(12),

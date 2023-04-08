@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import '../routing/route_state.dart';
 import '../utils/page_utils.dart';
 import '../utils/image_params.dart';
 import '../utils/image_calc.dart';
-import '../routing.dart';
 import 'package:provider/provider.dart';
 import '../app_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,10 +46,11 @@ class HomeMainWidget extends StatelessWidget {
                     details.localPosition.dx,
                     details.localPosition.dy,
                     artPuzzleBlocks);
-                print(
-                    "Location $pageNo ${details.localPosition.dx},${details.localPosition.dy}");
+                // print(
+                //    "Location $pageNo ${details.localPosition.dx},${details.localPosition.dy}");
                 String route = pageHomeRoute(pageNo);
                 if (route.isNotEmpty) {
+                  // Navigator.pushNamed(context, route);
                   RouteStateScope.of(context).go(route);
                 }
               },

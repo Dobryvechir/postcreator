@@ -438,7 +438,7 @@ class _NotusHtmlDecoder extends Converter<String, Delta> {
     }
   }
 
-  Map<String, String> _supportedElements = {
+  final Map<String, String> _supportedElements = {
     "li": "block",
     "blockquote": "block",
     "code": "block",

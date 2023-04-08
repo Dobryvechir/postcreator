@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'app_state.dart';
-import 'homepage/home_page.dart';
 import 'gallery_page.dart';
+import './homepage/home_main.dart';
 
 class GeneralPagePool extends StatefulWidget {
+  const GeneralPagePool({super.key});
+
   @override
   State<GeneralPagePool> createState() => _GeneralPagePoolState();
 }
@@ -17,10 +17,10 @@ class _GeneralPagePoolState extends State<GeneralPagePool> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = DvdHomePage();
+        page = const HomeMainWidget();
         break;
       case 1:
-        page = DvdGalleryPage();
+        page = const DvdGalleryPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -31,7 +31,7 @@ class _GeneralPagePoolState extends State<GeneralPagePool> {
           SafeArea(
             child: NavigationRail(
               extended: false,
-              destinations: [
+              destinations: const [
                 NavigationRailDestination(
                   icon: Icon(Icons.home),
                   label: Text('Home'),

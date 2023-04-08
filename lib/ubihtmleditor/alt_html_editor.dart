@@ -4,15 +4,17 @@ import './notustohtml.dart';
 
 class AltHtmlEditorWidget extends StatefulWidget {
   final ValueSetter<Function> changer;
+  final String initialText;
 
-  const AltHtmlEditorWidget({super.key, required this.changer});
+  const AltHtmlEditorWidget(
+      {super.key, required this.changer, required this.initialText});
 
   @override
   State<AltHtmlEditorWidget> createState() => _AltHtmlEditorWidgetState();
 }
 
 class _AltHtmlEditorWidgetState extends State<AltHtmlEditorWidget> {
-  final ZefyrController _controller = ZefyrController();
+  ZefyrController _controller = ZefyrController();
 
   @override
   void initState() {
@@ -22,6 +24,12 @@ class _AltHtmlEditorWidgetState extends State<AltHtmlEditorWidget> {
       String html = converter.encode(_controller.document.toDelta());
       return html;
     });
+    if (widget.initialText != '') {
+      var converter = const NotusHtmlCodec();
+      var delta = converter.decode(widget.initialText);
+      var document = NotusDocument.fromDelta(delta);
+      _controller = ZefyrController(document);
+    }
   }
 
   @override

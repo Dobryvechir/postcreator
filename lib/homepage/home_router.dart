@@ -7,8 +7,8 @@ import 'video_input.dart';
 import 'home_main.dart';
 
 List<Widget> routeHome(BuildContext context) => [const HomeMainWidget()];
-List<Widget> routeHomeText(BuildContext context) => [TextInputWidget()];
+List<Widget> routeHomeText(BuildContext context) => [const TextInputWidget()];
 List<Widget> routeHomeImage(BuildContext context) => [ImageInputWidget()];
-List<Widget> routeHomeAudio(BuildContext context) => [AudioInputWidget()];
+List<Widget> routeHomeAudio(BuildContext context) => [const AudioInputWidget()];
 List<Widget> routeHomeVideo(BuildContext context) => [VideoInputWidget()];
 List<Widget> routeHomeStart(BuildContext context) => [ArtStartWidget()];

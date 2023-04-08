@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'routing.dart';
 import 'screens/routing_path.dart';
 import 'auth/auth.dart';

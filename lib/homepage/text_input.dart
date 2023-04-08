@@ -33,6 +33,8 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                   changer: (Function data) {
                     valuer = data;
                   },
+                  initialText:
+                      appState.getProperty(homePagePrefix, textInfo) ?? '',
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -42,10 +44,11 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                         minWidth: 100,
                         child: ElevatedButton(
                             onPressed: () async {
+                              List<Object> lst = popArtRoute1of2Step(context);
                               String value = await valuer();
                               appState.setProperty(
                                   homePagePrefix, textInfo, value);
-                              Navigator.pop(context);
+                              popArtRoute2of2Step(lst);
                             },
                             child: Padding(
                               padding: EdgeInsets.all(12),
@@ -53,7 +56,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                             ))),
                     OutlinedButton(
                         onPressed: () async {
-                          Navigator.pop(context);
+                          popArtRoute(context);
                         },
                         child: Padding(
                           padding: EdgeInsets.all(12),
