@@ -1,0 +1,36 @@
+Access to the saving site is thru the Authorization bearer token
+1. the public and private certificate are placed at the site in the protected place
+2. in mobile/ desktop applications we should find the way to store data persistently
+the user enters login/password and receives a token - prepare this api
+write in php api which can have a new token
+It should contain 3 important fields
+userId(string), rightMask(number), userName(alias), gallery(string)
+gallery is defined as follows:
+ 1) by user data (should be able to change it)
+ 2) by first gallery created by this person
+ 3) in the default place
+3.this token is persistently saved in all applications
+4. everything high-secret stored is hash encoded by a specific constant key
+5. token is issued for 12 hours
+6. Good approach: every (non web) application generates its own private/public key
+   private is saved in the storage,
+   public is sent together with user/password and stored in the backend
+   
+   every time the user starts an application, dart application checks the token,
+  if it is expired or about to be expired, it sends privately encoded userId and time and receives
+  the token in response, which is temporarily saved    
+
+Temporary solution:
+generate 512 byte key
+make encoding: 
+ 1. first 256 bytes are to be non-repeative for placement, next 256 bytes are for xor operations
+ 2. generation algorithm is as follows:
+    a) generate 512 random bytes
+    b) the first 256 bytes are considered as follows:
+       b1) finding digits which are not used yet and make them in arbitrary order
+       b2) looking again, and if any digit is already met, it is replaced by any digit from that arbitrary order
+ 3. algorithm of encoding is as follows:
+    1 byte of front padding, 1 byte of back padding,front padding, 1 byte of encoding, 4byteid,10byte customer spec word,  data, back padding
+  the total must be dividable by 256
+  then data is converted as above and the result is base64 encoded
+  the transfer to the server is 
