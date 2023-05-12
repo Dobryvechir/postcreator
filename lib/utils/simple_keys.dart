@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:convert';
+import './logging_helper.dart';
 
 final _random = Random();
 final List<String> _btoaMap = List.filled(64, ' ');
@@ -86,6 +87,10 @@ List<int> encodeByHashKey(List<int> codes, List<int> key, List<int> id) {
   int sum = (-calculateSumIntList(resp)) & 0xffff;
   resp[4] = sum & 255;
   resp[5] = sum >> 8;
+  sum = calculateSumIntList(resp);
+  if (sum != 0) {
+    throw Exception("Expected zero sum, but it is $sum");
+  }
   List<int> res = encodingByHash(resp, key);
   return res;
 }
@@ -110,6 +115,7 @@ List<int> encodingByHash(List<int> src, List<int> key) {
       dst[key[i] + p] = src[i + p] ^ key[i + base];
     }
   }
+  printMultipleIntArrays([src, key, dst], ["Initial", "Key", "Result"]);
   return dst;
 }
 
@@ -265,11 +271,12 @@ List<int> debase64(String data, int unitSize) {
     if (cd < 32 || cd >= 128 || conv[cd] < 0) {
       throw Exception("unexpected character {cd}");
     }
-    rest = (rest << 6) | conv[cd];
+    rest |= conv[cd] << bits;
     bits += 6;
     if (bits >= 8) {
       bits -= 8;
-      res[pos++] = rest >> bits;
+      res[pos++] = rest & 0xff;
+      rest >>= 8;
       if (pos == m) {
         break;
       }

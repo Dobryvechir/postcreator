@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:path/path.dart' as p;
+import 'package:postcreator/utils/logging_helper.dart';
 import 'package:postcreator/utils/simple_keys.dart';
 
 List<int>? simpleKeys;
@@ -107,14 +108,14 @@ void copyDecodedFile(FileSystemEntity entity, String dst) {
 }
 
 void compareFoldersWithOutput(String src, String dst) {
-  String srcPath = new Directory(src).absolute.path;
+  String srcPath = Directory(src).absolute.path;
   int srcPathLen = srcPath.length;
-  String dstPath = new Directory(dst).absolute.path;
+  String dstPath = Directory(dst).absolute.path;
   int dstPathLen = dstPath.length;
   List<FileSystemEntity> srcItems =
-      new Directory(src).listSync(recursive: true, followLinks: false);
+      Directory(src).listSync(recursive: true, followLinks: false);
   List<FileSystemEntity> dstItems =
-      new Directory(dst).listSync(recursive: true, followLinks: false);
+      Directory(dst).listSync(recursive: true, followLinks: false);
 
   int nSrc = srcItems.length;
   int nDst = dstItems.length;
@@ -173,7 +174,7 @@ bool checkDeep(
   return res;
 }
 
-bool deepBufComparison(Uint8List buf1, Uint8List buf2) {
+bool deepBufComparison(Uint8List? buf1, Uint8List? buf2) {
   if (buf1 == null) {
     return buf2 == null;
   }
@@ -232,9 +233,9 @@ void reloadKeysWithChecking() {
   compareCheckKeys('simpleId', simpleIdOrig, simpleId);
 }
 
-void main() {
+void testDirectoryEncodingDecoding() {
   print('Start generating key and id');
-  generateKeyAndId('/tmp', 1024);
+  generateKeyAndId('/tmp', 8);
   print('start recreating folder tmp/enc');
   recreateFolder('/tmp/enc');
   print('start encoding to tmp/enc');
@@ -246,4 +247,49 @@ void main() {
   decodeWholeDirectory('/tmp/enc', '/tmp/dec');
   print('start comparison');
   compareFoldersWithOutput('/temp', '/tmp/dec');
+}
+
+List<int> convertEnDebase64(List<int> data) {
+  String resData = convertIntListToString(data);
+  printStringWithCodes(resData, "resdata");
+  Uint8List res = Uint8List.fromList(resData.codeUnits);
+  printUint8List(res, "res");
+  String str = String.fromCharCodes(res);
+  printStringWithCodes(str, "str");
+  List<int> resp = debase64(str, 4);
+  return resp;
+}
+
+String analyzeListEquals(List<int>? src, List<int>? dst) {
+  if (src == null) {
+    return dst == null ? "ok" : "fail src is null, but dst is not ";
+  }
+  if (dst == null) {
+    return "fail dst is null but src is not";
+  }
+  int n = src.length;
+  if (dst.length != n) {
+    return "fail src length is $n but dst length is ${dst.length}";
+  }
+  for (var i = 0; i < n; i++) {
+    int s = src[i];
+    int d = dst[i];
+    if (s != d) {
+      return "fail different at $i - $s and $d";
+    }
+  }
+  return "ok";
+}
+
+void testEnDebase64() {
+  List<int> orig = [0, 1, 2, 3, 75, 150, 255, 160];
+  List<int> res = convertEnDebase64(orig);
+  String s = analyzeListEquals(orig, res);
+  print("Comparison result: $s");
+  printMultipleIntArrays([orig, res], ["orig", "res"]);
+}
+
+void main() {
+  testEnDebase64();
+  testDirectoryEncodingDecoding();
 }
