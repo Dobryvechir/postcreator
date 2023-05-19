@@ -249,14 +249,14 @@ void testDirectoryEncodingDecoding() {
   compareFoldersWithOutput('/temp', '/tmp/dec');
 }
 
-List<int> convertEnDebase64(List<int> data) {
-  String resData = convertIntListToString(data);
+List<int> convertBtoaAtob(List<int> data) {
+  String resData = convertBtoa(data);
   printStringWithCodes(resData, "resdata");
   Uint8List res = Uint8List.fromList(resData.codeUnits);
   printUint8List(res, "res");
   String str = String.fromCharCodes(res);
   printStringWithCodes(str, "str");
-  List<int> resp = debase64(str, 4);
+  List<int> resp = convertAtob(str, 4);
   return resp;
 }
 
@@ -281,15 +281,15 @@ String analyzeListEquals(List<int>? src, List<int>? dst) {
   return "ok";
 }
 
-void testEnDebase64() {
+void testBtoaAtob() {
   List<int> orig = [0, 1, 2, 3, 75, 150, 255, 160];
-  List<int> res = convertEnDebase64(orig);
+  List<int> res = convertBtoaAtob(orig);
   String s = analyzeListEquals(orig, res);
   print("Comparison result: $s");
   printMultipleIntArrays([orig, res], ["orig", "res"]);
 }
 
 void main() {
-  testEnDebase64();
+  testBtoaAtob();
   testDirectoryEncodingDecoding();
 }

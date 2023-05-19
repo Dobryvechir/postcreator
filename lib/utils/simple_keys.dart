@@ -3,37 +3,53 @@ import 'dart:typed_data';
 import 'dart:convert';
 import './logging_helper.dart';
 
-final _random = Random();
+final _random = initializeRandom();
 final List<String> _btoaMap = List.filled(64, ' ');
 final List<int> _atobMap = List.filled(128, -1);
 const int _headSize = 7;
 const utf8Dec = Utf8Decoder();
 const utf8Enc = Utf8Encoder();
 
-List<int> generateHashKey(int base) {
-  List<int> key = List.filled(base << 1, 0);
-  Map<int, int> used = {};
-  List<int> positions = [];
-  for (var i = 0; i < base; i++) {
-    int a = _random.nextInt(1000000);
-    int b = a % base;
-    int c = (a ~/ base) & 255;
-    key[i] = b;
-    key[i + base] = c;
-    if (used.containsKey(b)) {
-      positions.add(i);
-    } else {
-      used[b] = i;
-    }
+Random initializeRandom() {
+  try {
+    return Random.secure();
+  } catch (e) {
+    // no secure support
   }
-  int n = 0;
-  for (var i = 0; i < base; i++) {
-    if (!used.containsKey(i)) {
-      int pos = positions[n++];
-      key[pos] = i;
-    }
+  return Random();
+}
+
+List<int> generateHashKey(int base) {
+  int n = base << 1;
+  List<int> key = List.filled(base + n, base);
+  for (var i = base - 1; i >= 0; i--) {
+    key[i + base] = _random.nextInt(256);
+    int p = _random.nextInt(i + 1);
+    int v = key[p] < base ? key[p] : p;
+    int u = key[i] < base ? key[i] : i;
+    key[p] = u;
+    key[i] = v;
   }
   return key;
+}
+
+bool checkHashKey(List<int> key, int base) {
+  int n = key.length;
+  if (n != (base << 1)) {
+    return false;
+  }
+  Map<int, int> pos = {};
+  for (var i = 0; i < base; i++) {
+    if (!(key[i + base] >= 0 && key[i + base] <= 255)) {
+      return false;
+    }
+    int p = key[i];
+    if (!(p >= 0 && p < base) || pos.containsKey(p)) {
+      return false;
+    }
+    pos[p] = 1;
+  }
+  return true;
 }
 
 List<int> generateId(int size) {
@@ -49,7 +65,7 @@ List<int> generateId(int size) {
 String encodeByHashKeyForString(String data, List<int> key, List<int> id) {
   List<int> codes = data.codeUnits;
   List<int> res = encodeByHashKey(codes, key, id);
-  String resData = convertIntListToString(res);
+  String resData = convertBtoa(res);
   return resData;
 }
 
@@ -57,7 +73,7 @@ Uint8List encodeByHashKeyForUint8List(
     Uint8List data, List<int> key, List<int> id) {
   List<int> codes = utf8Dec.convert(data).codeUnits;
   List<int> res = encodeByHashKey(codes, key, id);
-  String resData = convertIntListToString(res);
+  String resData = convertBtoa(res);
   return Uint8List.fromList(resData.codeUnits);
 }
 
@@ -161,7 +177,7 @@ List<int> getAtobMap() {
   return _atobMap;
 }
 
-String convertIntListToString(List<int> src) {
+String convertBtoa(List<int> src) {
   List<String> conv = getBtoaMap();
   StringBuffer res = StringBuffer();
   int n = src.length;
@@ -250,7 +266,7 @@ List<int> getDecodeKeyByEncodeKey(List<int> key) {
   return res;
 }
 
-List<int> debase64(String data, int unitSize) {
+List<int> convertAtob(String data, int unitSize) {
   List<int> conv = getAtobMap();
   int n = data.length;
   int m = n * 3 ~/ 4;
@@ -294,7 +310,7 @@ Uint8List decodeByHashKeyForUList(Uint8List data, List<int> key, List<int> id) {
 
 String decodeByHashKey(String data, List<int> key, List<int> id) {
   int unitSize = key.length >> 1;
-  List<int> resp = debase64(data, unitSize);
+  List<int> resp = convertAtob(data, unitSize);
   if (resp.isEmpty) {
     throw Exception('Zero length');
   }
