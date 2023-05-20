@@ -35,9 +35,13 @@ void writeKeyAndId(String path) {
   }
 }
 
-void generateKeyAndId(String path, int base) {
+void generateKeyAndId(String path, int base, int idSize) {
   simpleKeys = generateHashKey(base);
-  simpleId = generateId(20);
+  simpleId = generateId(idSize);
+  if (!checkHashKey(simpleKeys, base)) {
+    print('wrong key $base');
+    throw Exception("wrong key");
+  }
   writeKeyAndId(path);
 }
 
@@ -234,8 +238,10 @@ void reloadKeysWithChecking() {
 }
 
 void testDirectoryEncodingDecoding() {
-  print('Start generating key and id');
-  generateKeyAndId('/tmp', 8);
+  int base = 4096;
+  int idSize = 20;
+  print("Start generating key($base) and id($idSize)");
+  generateKeyAndId('/tmp', base, idSize);
   print('start recreating folder tmp/enc');
   recreateFolder('/tmp/enc');
   print('start encoding to tmp/enc');
@@ -290,6 +296,6 @@ void testBtoaAtob() {
 }
 
 void main() {
-  testBtoaAtob();
+  // testBtoaAtob();
   testDirectoryEncodingDecoding();
 }

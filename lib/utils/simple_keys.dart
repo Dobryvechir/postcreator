@@ -21,7 +21,7 @@ Random initializeRandom() {
 
 List<int> generateHashKey(int base) {
   int n = base << 1;
-  List<int> key = List.filled(base + n, base);
+  List<int> key = List.filled(n, base);
   for (var i = base - 1; i >= 0; i--) {
     key[i + base] = _random.nextInt(256);
     int p = _random.nextInt(i + 1);
@@ -33,14 +33,14 @@ List<int> generateHashKey(int base) {
   return key;
 }
 
-bool checkHashKey(List<int> key, int base) {
-  int n = key.length;
+bool checkHashKey(List<int>? key, int base) {
+  int n = key != null ? key.length : 0;
   if (n != (base << 1)) {
     return false;
   }
   Map<int, int> pos = {};
   for (var i = 0; i < base; i++) {
-    if (!(key[i + base] >= 0 && key[i + base] <= 255)) {
+    if (!(key![i + base] >= 0 && key[i + base] <= 255)) {
       return false;
     }
     int p = key[i];

@@ -16,8 +16,69 @@ MARKS:
 P: C:\wp\home\sponsorschoose\f\
 G: crypto
 </div>
+<h3>UNIAPI:</h3>
 <div>
-UNIAPI:
-D4 P1 G0
-List<int> generateHashKey(int base)
+<pre>
+D5 P1 G0
+generates the key of base size where base = 256,512,1024,2048,4096,... 
+D: List<int> generateHashKey(int base)
+R: array of base*2, where the first base is permutation, the second is xor transformation
+</pre>
 </div>
+<div>
+<pre>
+D5 P1 G0
+checks the key of base size where base = 256,512,1024,2048,4096,... 
+D: bool checkHashKey(List<int>? key, int base)
+R: true if the hashkey well formed for base
+</pre>
+</div>
+<div>
+<pre>
+D5 P1 G0
+encodes the key for saving and transfer (base = 256,512,1024,2048,4096,...) 
+D: 
+R: encoded string
+</pre>
+</div>
+<div>
+<pre>
+D5 P1 G0
+decodes the key (base = 256,512,1024,2048,4096,...) 
+D: 
+R: the key of base size
+</pre>
+</div>
+<div>
+<pre>
+D5 P1 G0
+detects the key's base (base = 256,512,1024,2048,4096,...) 
+D: 
+R: the base size
+</pre>
+</div>
+<div>
+<pre>
+D5 P0 G0
+generates id of n bytes 
+D: 
+R: string of id, consisting of valid base64 symbols, the size must be even
+</pre>
+</div>
+<div>
+<pre>
+D0 P0 G0
+checks id is correct (consisting of valid base64 symbols, the size must be even)   
+D: 
+R: true if id is valid
+</pre>
+</div>
+<div>
+<pre>
+D0 P0 G0
+checks id is correct (consisting of valid base64 symbols, the size must be even)   
+D: 
+R: true if id is valid
+</pre>
+</div>
+
