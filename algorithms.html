@@ -21,16 +21,35 @@ gallery is defined as follows:
   the token in response, which is temporarily saved    
 
 Temporary solution:
-generate 512 byte key
+generate 4096-based key
+the host supposes the range between 10-24, with the default to 14. 
 make encoding: 
- 1. first 256 bytes are to be non-repeative for placement, next 256 bytes are for xor operations
- 2. generation algorithm is as follows:
-    a) generate 512 random bytes
-    b) the first 256 bytes are considered as follows:
-       b1) finding digits which are not used yet and make them in arbitrary order
-       b2) looking again, and if any digit is already met, it is replaced by any digit from that arbitrary order
+ 1. first base bytes are to be non-repeative for permutation, next base bytes are for xor transformation
+ 2. the user has the option to increase the base up to 20-degree. So, his choise is 10..20 with the default of 14
  3. algorithm of encoding is as follows:
     1 byte of front padding, 1 byte of back padding,front padding, 1 byte of encoding, 4byteid,10byte customer spec word,  data, back padding
-  the total must be dividable by 256
+  the total must be dividable by base
   then data is converted as above and the result is base64 encoded
-  the transfer to the server is 
+When a user comes, he has a password and depending on the password, his communication can be on some
+levels of security
+
+Login: POST <host and path>lg.php
+ User
+ Password
+ new generated id inside,
+ new generated key, everything is encoded inside  {"real user", "pass": "real password"} json-encoded by json screening of \ and "
+ user and pass are space truncated, 
+ all \ and " can be simply removed from the user's name
+ RESPONSE: if everything is ok the result is a positive number - its additional number
+           if not, the result will be 0 or any other  ["123"] - positive reply, ["0"] - error
+The device stores the response (code) the id and the key at its side 
+
+Next communication is as follows:
+    POST <host and path>cm.php
+    where body is as follows:
+    h=code&m=encoded task
+
+    the first encoded task is storing a post with audio/video/image/text
+
+
+ 

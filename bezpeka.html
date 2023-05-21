@@ -21,7 +21,7 @@ G: crypto
 <pre>
 D5 P1 G0
 generates the key of base size where base = 256,512,1024,2048,4096,... 
-D: List<int> generateHashKey(int base)
+D: List&lt;int&gt; generateHashKey(int base)
 R: array of base*2, where the first base is permutation, the second is xor transformation
 </pre>
 </div>
@@ -29,31 +29,33 @@ R: array of base*2, where the first base is permutation, the second is xor trans
 <pre>
 D5 P1 G0
 checks the key of base size where base = 256,512,1024,2048,4096,... 
-D: bool checkHashKey(List<int>? key, int base)
+D: bool checkHashKey(List&lt;int&gt;? key, int base)
 R: true if the hashkey well formed for base
 </pre>
 </div>
 <div>
 <pre>
-D5 P1 G0
+D4 P0 G0
 encodes the key for saving and transfer (base = 256,512,1024,2048,4096,...) 
-D: 
+D: String encodeHashKey(List&lt;int&gt; src)
 R: encoded string
 </pre>
 </div>
 <div>
 <pre>
-D5 P1 G0
+D5 P0 G0
 decodes the key (base = 256,512,1024,2048,4096,...) 
-D: 
+D: List&lt;int&gt; decodeHashKey(String data)
 R: the key of base size
 </pre>
 </div>
 <div>
 <pre>
-D5 P1 G0
-detects the key's base (base = 256,512,1024,2048,4096,...) 
-D: 
+D5 P0 G0
+detects the key's base's basis (base = 256,512,1024,2048,4096,...) 
+D: int evaluateBasisByBase(int base)
+   m is the size of the encoded key
+   int evaluateBasisSize(int m) 
 R: the base size
 </pre>
 </div>
@@ -61,24 +63,126 @@ R: the base size
 <pre>
 D5 P0 G0
 generates id of n bytes 
-D: 
+D: List&lt;int&gt; generateId(int size) 
 R: string of id, consisting of valid base64 symbols, the size must be even
 </pre>
 </div>
 <div>
 <pre>
-D0 P0 G0
+D5 P0 G0
 checks id is correct (consisting of valid base64 symbols, the size must be even)   
-D: 
+D: bool checkId(String id)
 R: true if id is valid
 </pre>
 </div>
 <div>
 <pre>
-D0 P0 G0
-checks id is correct (consisting of valid base64 symbols, the size must be even)   
-D: 
+D5 P0 G0
+converts id to compact 256-based form   
+D: List&lt;int&gt; makeCompactId(String id)
+R: true if id is valid
+</pre>
+</div>
+<div>
+<pre>
+D5 P0 G0
+converts id back to extended 32-based form   
+D: String makeExtendedId(List&lt;int&gt; id)
 R: true if id is valid
 </pre>
 </div>
 
+<div>
+<pre>
+D5 P0 G0
+encodes the context by hash key and id
+D: String encodeByHashKeyForString(String data, List&lt;int&gt; key, List&lt;int&gt; id)
+R: a string to be transferred to another side
+</pre>
+</div>
+<div>
+<pre>
+D5 P0 G0
+convert the standard encoding key to decoding key
+D: List&lt;int&gt; getDecodeKeyByEncodeKey(List&lt;int&gt; key)
+</pre>
+</div>
+<div>
+<div>
+<pre>
+D5 P0 G0
+D: String decodeByHashKey(String data, List&lt;int&gt; key, List&lt;int&gt; id)
+R: decoded original string
+</pre>
+</div>
+<div>
+<pre>
+D0 P0 G0
+D: handshakeV(String hand, String shake, String urlBefore, String urlAfter)
+R: decoded original string
+</pre>
+</div>
+<div>
+<pre>
+D0 P0 G0
+D: sendReceiveV(String hand, String shake, String urlBefore, String urlAfter)
+R: decoded original string
+</pre>
+</div>
+
+<style>
+.D5-P0 {
+  background-color: orange;
+}
+.D5-P1 {
+  background-color: yellow;
+}
+.D0-P0 {
+  background-color: red;
+  color: white;
+}
+.D4-P0 {
+  background-color: blue;
+  color: yellow;
+}
+.D5-P5 {
+  background-color: green;
+  text: yellow;
+}
+</style>
+<script>
+function readDPG(s) {
+   if (typeof s!=='string') {
+      return null;
+   }
+   s = s.trim();
+   if (!s || !s.length || s.length<8) {
+     return null;
+   }
+   if (s[0]==='D' && s[2]===' ' && s[3]==='P') {
+      s = s.substring(0,2) + '-' + s.substring(3,5);
+      s[2] = '-';
+      return s;
+   }
+   return null;
+}
+function markPre(parent){
+   const n = parent && parent.childNodes && parent.childNodes.length;
+   if (!n) {
+       return;
+   }
+   for(var i=0;i<n;i++) {
+      const node = parent.childNodes[i];
+      if (node) {
+          v = readDPG(node.innerHTML);
+          if (v) {
+            node.className = v; 
+          } else {
+            markPre(node);
+          }
+      }        
+   }
+   
+}
+markPre(document.body)
+</script>

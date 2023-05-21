@@ -37,7 +37,8 @@ void writeKeyAndId(String path) {
 
 void generateKeyAndId(String path, int base, int idSize) {
   simpleKeys = generateHashKey(base);
-  simpleId = generateId(idSize);
+  String id = generateId(idSize);
+  simpleId = makeCompactId(id);
   if (!checkHashKey(simpleKeys, base)) {
     print('wrong key $base');
     throw Exception("wrong key");
@@ -238,7 +239,7 @@ void reloadKeysWithChecking() {
 }
 
 void testDirectoryEncodingDecoding() {
-  int base = 4096;
+  int base = 1 << 14;
   int idSize = 20;
   print("Start generating key($base) and id($idSize)");
   generateKeyAndId('/tmp', base, idSize);
@@ -295,7 +296,46 @@ void testBtoaAtob() {
   printMultipleIntArrays([orig, res], ["orig", "res"]);
 }
 
+void testGenerateCheckCompactExtendedId() {
+  int lim = 20000;
+  int order = 0;
+  for (var size = 2; size < lim; size += 2) {
+    String id = generateId(size);
+    bool checked = checkId(id);
+    List<int> compact = makeCompactId(id);
+    String extended = makeExtendedId(compact);
+    if (!(checked && id == extended)) {
+      order++;
+      print("$size id fails checked=$checked id=$id extended=$extended");
+    }
+  }
+  if (order == 0) {
+    print("id ok 2..$lim");
+  } else {
+    print("id failed $order times");
+  }
+}
+
+void testGenerateEncodeDecodeHashKey() {
+  for (int basis = 8; basis < 24; basis++) {
+    int base = 1 << basis;
+    List<int> key = generateHashKey(base);
+    print("started base=$base basis=$basis key=${key.length}");
+    bool checked = checkHashKey(key, base);
+    if (!checked) {
+      print("$basis key failed at check ${key.length}");
+    } else {
+      String encoded = encodeHashKey(key);
+      List<int> decoded = decodeHashKey(encoded);
+      String s = analyzeListEquals(key, decoded);
+      print("$basis comparison result: $s");
+    }
+  }
+}
+
 void main() {
   // testBtoaAtob();
+  // testGenerateCheckCompactExtendedId();
+  testGenerateEncodeDecodeHashKey();
   testDirectoryEncodingDecoding();
 }

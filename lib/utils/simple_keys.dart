@@ -5,7 +5,9 @@ import './logging_helper.dart';
 
 final _random = initializeRandom();
 final List<String> _btoaMap = List.filled(64, ' ');
+final List<String> _btoaMap32 = List.filled(32, ' ');
 final List<int> _atobMap = List.filled(128, -1);
+final List<int> _atobMap32 = List.filled(128, -1);
 const int _headSize = 7;
 const utf8Dec = Utf8Decoder();
 const utf8Enc = Utf8Encoder();
@@ -52,14 +54,85 @@ bool checkHashKey(List<int>? key, int base) {
   return true;
 }
 
-List<int> generateId(int size) {
-  List<int> key = List.filled(size, 0);
+String generateId(int size) {
+  StringBuffer res = StringBuffer();
   for (var i = 0; i < size; i++) {
     int a = _random.nextInt(1000000);
-    int b = a % 32;
-    key[i] = b < 26 ? b + 65 : b - 26 + 48;
+    int b = a & 31;
+    res.write(String.fromCharCode(b < 26 ? b + 65 : b - 26 + 48));
   }
-  return key;
+  return res.toString();
+}
+
+bool checkId(String src) {
+  List<int> id = src.codeUnits;
+  int n = id.length;
+  if (n == 0 || (n & 1) != 0) {
+    return false;
+  }
+  for (var i = 0; i < n; i++) {
+    int c = id[i];
+    if (!(c >= 65 && c <= 91) && !(c >= 48 && c <= 57)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+List<int> makeCompactId(String data) {
+  int n = data.length;
+  int size = n * 5;
+  int m = (size >> 3) + ((size & 7) != 0 ? 1 : 0);
+  List<int> res = List.filled(m, 0);
+  List<int> conv = getAtobMap32();
+  int rest = 0;
+  int bits = 0;
+  int pos = 0;
+  List<int> codes = data.codeUnits;
+  for (var i = 0; i < n; i++) {
+    int cd = codes[i];
+    if (cd < 32 || cd >= 128 || conv[cd] < 0) {
+      throw Exception("unexpected character {cd}");
+    }
+    rest |= conv[cd] << bits;
+    bits += 5;
+    if (bits >= 8) {
+      bits -= 8;
+      res[pos++] = rest & 0xff;
+      rest >>= 8;
+      if (pos == m) {
+        break;
+      }
+    }
+  }
+  if (bits >= 0 && pos < m) {
+    res[pos] = rest & 0xff;
+  }
+  return res;
+}
+
+String makeExtendedId(List<int> src) {
+  List<String> conv = getBtoaMap32();
+  StringBuffer res = StringBuffer();
+  int n = src.length;
+  int rest = 0;
+  int bits = 0;
+  for (int i = 0; i < n; i++) {
+    rest |= (src[i] << bits);
+    res.write(conv[rest & 31]);
+    bits += 3;
+    rest >>= 5;
+    if (bits >= 5) {
+      res.write(conv[rest & 31]);
+      rest >>= 5;
+      bits -= 5;
+    }
+  }
+  String s = res.toString();
+  if ((s.length & 1) != 0) {
+    s = s.substring(0, s.length - 1);
+  }
+  return s;
 }
 
 String encodeByHashKeyForString(String data, List<int> key, List<int> id) {
@@ -131,7 +204,6 @@ List<int> encodingByHash(List<int> src, List<int> key) {
       dst[key[i] + p] = src[i + p] ^ key[i + base];
     }
   }
-  printMultipleIntArrays([src, key, dst], ["Initial", "Key", "Result"]);
   return dst;
 }
 
@@ -146,7 +218,7 @@ void checkListByteLimited(List<int> data, String place) {
 }
 
 List<String> getBtoaMap() {
-  if (_btoaMap[0] == 'a') {
+  if (_btoaMap[0] == 'A') {
     return _btoaMap;
   }
   for (int i = 0; i < 26; i++) {
@@ -159,6 +231,19 @@ List<String> getBtoaMap() {
   _btoaMap[62] = '_';
   _btoaMap[63] = '.';
   return _btoaMap;
+}
+
+List<String> getBtoaMap32() {
+  if (_btoaMap32[0] == 'A') {
+    return _btoaMap32;
+  }
+  for (int i = 0; i < 26; i++) {
+    _btoaMap32[i] = String.fromCharCode(i + 65);
+  }
+  for (int i = 0; i < 6; i++) {
+    _btoaMap32[i + 26] = String.fromCharCode(i + 48);
+  }
+  return _btoaMap32;
 }
 
 List<int> getAtobMap() {
@@ -175,6 +260,20 @@ List<int> getAtobMap() {
   _atobMap['_'.codeUnits[0]] = 62;
   _atobMap['.'.codeUnits[0]] = 63;
   return _atobMap;
+}
+
+List<int> getAtobMap32() {
+  if (_atobMap32[66] == 1) {
+    return _atobMap32;
+  }
+  for (int i = 0; i < 26; i++) {
+    _atobMap32[i + 65] = i;
+    _atobMap32[i + 97] = i;
+  }
+  for (int i = 0; i < 10; i++) {
+    _atobMap32[i + 48] = (i % 6) + 26;
+  }
+  return _atobMap32;
 }
 
 String convertBtoa(List<int> src) {
@@ -299,6 +398,115 @@ List<int> convertAtob(String data, int unitSize) {
     }
   }
   return res;
+}
+
+int evaluateBytesPerBase(int basis) {
+  int base = 1 << basis;
+  int n = base * (basis + 8);
+  int bytes = (n ~/ 6);
+  if ((n % 6) != 0) {
+    bytes++;
+  }
+  return bytes;
+}
+
+int evaluateBasisSize(int m) {
+  int st = 8;
+  int fn = 30;
+  int md = 14;
+  while (st <= fn) {
+    int p = evaluateBytesPerBase(md);
+    if (p == m) {
+      return md;
+    }
+    if (p > m) {
+      fn = md - 1;
+    } else {
+      st = md + 1;
+    }
+    md = (st + fn) >> 1;
+  }
+  throw Exception("Wrong key size $m");
+}
+
+int evaluateBasisByBase(int base) {
+  int basis = -1;
+  while (base != 0) {
+    basis++;
+    base >>= 1;
+  }
+  return basis;
+}
+
+List<int> decodeHashKey(String data) {
+  List<int> conv = getAtobMap();
+  int n = data.length;
+  int basis = evaluateBasisSize(n);
+  int base = 1 << basis;
+  int m = base << 1;
+  List<int> res = List.filled(m, 0);
+  int rest = 0;
+  int bits = 0;
+  int pos = 0;
+  List<int> codes = data.codeUnits;
+  int i = 0;
+  int mask = base - 1;
+  for (; pos < base; i++) {
+    int cd = codes[i];
+    if (cd < 32 || cd >= 128 || conv[cd] < 0) {
+      throw Exception("unexpected character {cd}");
+    }
+    rest |= conv[cd] << bits;
+    bits += 6;
+    if (bits >= basis) {
+      bits -= basis;
+      res[pos++] = rest & mask;
+      rest >>= basis;
+    }
+  }
+  for (; i < n; i++) {
+    int cd = codes[i];
+    if (cd < 32 || cd >= 128 || conv[cd] < 0) {
+      throw Exception("unexpected character {cd}");
+    }
+    rest |= conv[cd] << bits;
+    bits += 6;
+    if (bits >= 8) {
+      bits -= 8;
+      res[pos++] = rest & 0xff;
+      rest >>= 8;
+      if (pos == m) {
+        break;
+      }
+    }
+  }
+  return res;
+}
+
+String encodeHashKey(List<int> src) {
+  List<String> conv = getBtoaMap();
+  StringBuffer res = StringBuffer();
+  int n = src.length;
+  int base = n >> 1;
+  int basis = evaluateBasisByBase(base);
+  int rest = 0;
+  int bits = 0;
+  for (int i = 0; i < n; i++) {
+    rest |= (src[i] << bits);
+    if (i == base) {
+      basis = 8;
+    }
+    bits += basis;
+    while (bits >= 6) {
+      res.write(conv[rest & 63]);
+      bits -= 6;
+      rest >>= 6;
+    }
+  }
+  if (bits > 0) {
+    res.write(conv[rest]);
+  }
+  return res.toString();
 }
 
 Uint8List decodeByHashKeyForUList(Uint8List data, List<int> key, List<int> id) {
