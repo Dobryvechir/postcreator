@@ -37,8 +37,8 @@ void writeKeyAndId(String path) {
 
 void generateKeyAndId(String path, int base, int idSize) {
   simpleKeys = generateHashKey(base);
-  String id = generateId(idSize);
-  simpleId = makeCompactId(id);
+  String id = generateSignId(idSize);
+  simpleId = makeCompactSignId(id);
   if (!checkHashKey(simpleKeys, base)) {
     print('wrong key $base');
     throw Exception("wrong key");
@@ -300,10 +300,10 @@ void testGenerateCheckCompactExtendedId() {
   int lim = 20000;
   int order = 0;
   for (var size = 2; size < lim; size += 2) {
-    String id = generateId(size);
-    bool checked = checkId(id);
-    List<int> compact = makeCompactId(id);
-    String extended = makeExtendedId(compact);
+    String id = generateSignId(size);
+    bool checked = checkSignId(id);
+    List<int> compact = makeCompactSignId(id);
+    String extended = makeExtendedSignId(compact);
     if (!(checked && id == extended)) {
       order++;
       print("$size id fails checked=$checked id=$id extended=$extended");

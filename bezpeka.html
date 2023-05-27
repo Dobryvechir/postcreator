@@ -19,39 +19,43 @@ G: crypto
 <h3>UNIAPI:</h3>
 <div>
 <pre>
-D5 P1 G0
+D5 P5 G0
 generates the key of base size where base = 256,512,1024,2048,4096,... 
 D: List&lt;int&gt; generateHashKey(int base)
+P: function generateHashKey($base)
 R: array of base*2, where the first base is permutation, the second is xor transformation
 </pre>
 </div>
 <div>
 <pre>
-D5 P1 G0
+D5 P5 G0
 checks the key of base size where base = 256,512,1024,2048,4096,... 
 D: bool checkHashKey(List&lt;int&gt;? key, int base)
+P: function checkHashKey($key, $base)
 R: true if the hashkey well formed for base
 </pre>
 </div>
 <div>
 <pre>
-D4 P0 G0
+D5 P4 G0
 encodes the key for saving and transfer (base = 256,512,1024,2048,4096,...) 
 D: String encodeHashKey(List&lt;int&gt; src)
+P: function encodeHashKey($src)
 R: encoded string
 </pre>
 </div>
 <div>
 <pre>
-D5 P0 G0
+D5 P4 G0
 decodes the key (base = 256,512,1024,2048,4096,...) 
 D: List&lt;int&gt; decodeHashKey(String data)
+P:
 R: the key of base size
 </pre>
 </div>
 <div>
 <pre>
-D5 P0 G0
+D5 P4 G0
 detects the key's base's basis (base = 256,512,1024,2048,4096,...) 
 D: int evaluateBasisByBase(int base)
    m is the size of the encoded key
@@ -61,57 +65,64 @@ R: the base size
 </div>
 <div>
 <pre>
-D5 P0 G0
+D5 P4 G0
 generates id of n bytes 
-D: List&lt;int&gt; generateId(int size) 
+D: List&lt;int&gt; generateSignId(int size) 
+P: function generateSignId($size)
 R: string of id, consisting of valid base64 symbols, the size must be even
 </pre>
 </div>
 <div>
 <pre>
-D5 P0 G0
-checks id is correct (consisting of valid base64 symbols, the size must be even)   
-D: bool checkId(String id)
-R: true if id is valid
+D5 P4 G0
+checks sign id is correct (consisting of valid base64 symbols, the size must be even)   
+D: bool checkSignId(String signId)
+P: function checkSignId($signId)
+R: true if signId is valid
 </pre>
 </div>
 <div>
 <pre>
-D5 P0 G0
+D5 P4 G0
 converts id to compact 256-based form   
-D: List&lt;int&gt; makeCompactId(String id)
+D: List&lt;int&gt; makeCompactSignId(String id)
+P: function makeCompactSignId($data)
 R: true if id is valid
 </pre>
 </div>
 <div>
 <pre>
-D5 P0 G0
+D5 P4 G0
 converts id back to extended 32-based form   
-D: String makeExtendedId(List&lt;int&gt; id)
+D: String makeExtendedSignId(List&lt;int&gt; id)
+P: function makeExtendedSignId($src)
 R: true if id is valid
 </pre>
 </div>
 
 <div>
 <pre>
-D5 P0 G0
+D5 P4 G0
 encodes the context by hash key and id
 D: String encodeByHashKeyForString(String data, List&lt;int&gt; key, List&lt;int&gt; id)
+P: function encodeByHashKeyForString($data, $key, $id)
 R: a string to be transferred to another side
 </pre>
 </div>
 <div>
 <pre>
-D5 P0 G0
+D5 P4 G0
 convert the standard encoding key to decoding key
 D: List&lt;int&gt; getDecodeKeyByEncodeKey(List&lt;int&gt; key)
+P: function getDecodeKeyByEncodeKey($key)
 </pre>
 </div>
 <div>
 <div>
 <pre>
-D5 P0 G0
+D5 P4 G0
 D: String decodeByHashKey(String data, List&lt;int&gt; key, List&lt;int&gt; id)
+P: function decodeByHashKey($data, $key, $id)
 R: decoded original string
 </pre>
 </div>
@@ -137,17 +148,24 @@ R: decoded original string
 .D5-P1 {
   background-color: yellow;
 }
+.D5-P2 {
+  background-color: #ff99ff;
+}
+.D5-P3 {
+  background-color: #00ffff;
+}
+
 .D0-P0 {
   background-color: red;
   color: white;
 }
-.D4-P0 {
+.D4-P0, .D5-P4 {
   background-color: blue;
   color: yellow;
 }
 .D5-P5 {
   background-color: green;
-  text: yellow;
+  color: yellow;
 }
 </style>
 <script>

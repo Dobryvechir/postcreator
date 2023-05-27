@@ -54,7 +54,7 @@ bool checkHashKey(List<int>? key, int base) {
   return true;
 }
 
-String generateId(int size) {
+String generateSignId(int size) {
   StringBuffer res = StringBuffer();
   for (var i = 0; i < size; i++) {
     int a = _random.nextInt(1000000);
@@ -64,8 +64,8 @@ String generateId(int size) {
   return res.toString();
 }
 
-bool checkId(String src) {
-  List<int> id = src.codeUnits;
+bool checkSignId(String signId) {
+  List<int> id = signId.codeUnits;
   int n = id.length;
   if (n == 0 || (n & 1) != 0) {
     return false;
@@ -79,7 +79,7 @@ bool checkId(String src) {
   return true;
 }
 
-List<int> makeCompactId(String data) {
+List<int> makeCompactSignId(String data) {
   int n = data.length;
   int size = n * 5;
   int m = (size >> 3) + ((size & 7) != 0 ? 1 : 0);
@@ -111,7 +111,7 @@ List<int> makeCompactId(String data) {
   return res;
 }
 
-String makeExtendedId(List<int> src) {
+String makeExtendedSignId(List<int> src) {
   List<String> conv = getBtoaMap32();
   StringBuffer res = StringBuffer();
   int n = src.length;
@@ -538,14 +538,14 @@ String decodeByHashKey(String data, List<int> key, List<int> id) {
   if (posEnd < posBegin + id.length) {
     throw Exception('too short data');
   }
-  if (!checkExactId(res, posBegin, id)) {
+  if (!checkExactSignId(res, posBegin, id)) {
     throw Exception('Bad id');
   }
   String resData = restoreStringByAlgo(res, posBegin + id.length, posEnd, algo);
   return resData;
 }
 
-bool checkExactId(List<int> res, int pos, List<int> id) {
+bool checkExactSignId(List<int> res, int pos, List<int> id) {
   int n = id.length;
   for (var i = 0; i < n; i++) {
     if (res[pos + i] != (id[i] & 255)) {
