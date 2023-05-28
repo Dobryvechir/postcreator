@@ -296,7 +296,7 @@ void testBtoaAtob() {
   printMultipleIntArrays([orig, res], ["orig", "res"]);
 }
 
-void testGenerateCheckCompactExtendedId() {
+void testGenerateCheckCompactExtendedSignId() {
   int lim = 20000;
   int order = 0;
   for (var size = 2; size < lim; size += 2) {
@@ -335,7 +335,7 @@ void testGenerateEncodeDecodeHashKey() {
 
 void main() {
   // testBtoaAtob();
-  // testGenerateCheckCompactExtendedId();
+  // testGenerateCheckCompactExtendedSignId();
   testGenerateEncodeDecodeHashKey();
   testDirectoryEncodingDecoding();
 }

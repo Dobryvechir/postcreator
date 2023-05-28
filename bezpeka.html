@@ -37,7 +37,7 @@ R: true if the hashkey well formed for base
 </div>
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 encodes the key for saving and transfer (base = 256,512,1024,2048,4096,...) 
 D: String encodeHashKey(List&lt;int&gt; src)
 P: function encodeHashKey($src)
@@ -46,26 +46,27 @@ R: encoded string
 </div>
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 decodes the key (base = 256,512,1024,2048,4096,...) 
 D: List&lt;int&gt; decodeHashKey(String data)
-P:
+P: function decodeHashKey($data)
 R: the key of base size
 </pre>
 </div>
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 detects the key's base's basis (base = 256,512,1024,2048,4096,...) 
 D: int evaluateBasisByBase(int base)
    m is the size of the encoded key
-   int evaluateBasisSize(int m) 
+   int evaluateBasisSize(int m)
+P: function evaluateBasisByBase($base)    
 R: the base size
 </pre>
 </div>
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 generates id of n bytes 
 D: List&lt;int&gt; generateSignId(int size) 
 P: function generateSignId($size)
@@ -74,7 +75,7 @@ R: string of id, consisting of valid base64 symbols, the size must be even
 </div>
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 checks sign id is correct (consisting of valid base64 symbols, the size must be even)   
 D: bool checkSignId(String signId)
 P: function checkSignId($signId)
@@ -83,7 +84,7 @@ R: true if signId is valid
 </div>
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 converts id to compact 256-based form   
 D: List&lt;int&gt; makeCompactSignId(String id)
 P: function makeCompactSignId($data)
@@ -92,7 +93,7 @@ R: true if id is valid
 </div>
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 converts id back to extended 32-based form   
 D: String makeExtendedSignId(List&lt;int&gt; id)
 P: function makeExtendedSignId($src)
