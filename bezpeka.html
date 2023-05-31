@@ -103,7 +103,7 @@ R: true if id is valid
 
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 encodes the context by hash key and id
 D: String encodeByHashKeyForString(String data, List&lt;int&gt; key, List&lt;int&gt; id)
 P: function encodeByHashKeyForString($data, $key, $id)
@@ -112,7 +112,7 @@ R: a string to be transferred to another side
 </div>
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 convert the standard encoding key to decoding key
 D: List&lt;int&gt; getDecodeKeyByEncodeKey(List&lt;int&gt; key)
 P: function getDecodeKeyByEncodeKey($key)
@@ -121,7 +121,7 @@ P: function getDecodeKeyByEncodeKey($key)
 <div>
 <div>
 <pre>
-D5 P4 G0
+D5 P5 G0
 D: String decodeByHashKey(String data, List&lt;int&gt; key, List&lt;int&gt; id)
 P: function decodeByHashKey($data, $key, $id)
 R: decoded original string

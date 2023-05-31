@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:path/path.dart' as p;
 import 'package:postcreator/utils/logging_helper.dart';
 import 'package:postcreator/utils/simple_keys.dart';
 
@@ -8,30 +7,16 @@ List<int>? simpleKeys;
 List<int>? revertedKeys;
 List<int>? simpleId;
 
-List<int> readAsIntList(String path, String name) {
-  var filePath = p.join(path, name);
-  File file = File(filePath);
-  String fileContent = file.readAsStringSync();
-  return fileContent.codeUnits;
-}
-
-void writeAsIntList(String path, String name, List<int> data) {
-  var filePath = p.join(path, name);
-  File file = File(filePath);
-  String content = String.fromCharCodes(data);
-  file.writeAsStringSync(content);
-}
-
 void readKeyAndId(String path) {
-  simpleKeys = readAsIntList(path, 'p_klucz');
+  simpleKeys = readFileAsIntList(path, 'p_klucz');
   revertedKeys = getDecodeKeyByEncodeKey(simpleKeys!);
-  simpleId = readAsIntList(path, 'p_id');
+  simpleId = readFileAsIntList(path, 'p_id');
 }
 
 void writeKeyAndId(String path) {
   if (simpleKeys != null && simpleId != null) {
-    writeAsIntList(path, 'p_klucz', simpleKeys!);
-    writeAsIntList(path, 'p_id', simpleId!);
+    writeFileAsIntList(path, 'p_klucz', simpleKeys!);
+    writeFileAsIntList(path, 'p_id', simpleId!);
   }
 }
 
@@ -234,11 +219,13 @@ void reloadKeysWithChecking() {
   simpleKeys = null;
   simpleId = null;
   readKeyAndId('/tmp');
-  compareCheckKeys('simpleKeys', simpleKeysOrig, simpleKeys);
-  compareCheckKeys('simpleId', simpleIdOrig, simpleId);
+  if (simpleIdOrig != null || simpleKeysOrig != null) {
+    compareCheckKeys('simpleKeys', simpleKeysOrig, simpleKeys);
+    compareCheckKeys('simpleId', simpleIdOrig, simpleId);
+  }
 }
 
-void testDirectoryEncodingDecoding() {
+void testDirectoryEncoding() {
   int base = 1 << 14;
   int idSize = 20;
   print("Start generating key($base) and id($idSize)");
@@ -247,6 +234,9 @@ void testDirectoryEncodingDecoding() {
   recreateFolder('/tmp/enc');
   print('start encoding to tmp/enc');
   encodeWholeDirectory('/temp', '/tmp/enc');
+}
+
+void testDirectoryDecoding() {
   reloadKeysWithChecking();
   print('start recreating folder tmp/dec');
   recreateFolder('/tmp/dec');
@@ -254,6 +244,16 @@ void testDirectoryEncodingDecoding() {
   decodeWholeDirectory('/tmp/enc', '/tmp/dec');
   print('start comparison');
   compareFoldersWithOutput('/temp', '/tmp/dec');
+}
+
+void testDirectoryEncodingDecoding(int algo) {
+  print('!!algo $algo');
+  if ((algo & 2) == 0) {
+    testDirectoryEncoding();
+  }
+  if ((algo & 1) == 0) {
+    testDirectoryDecoding();
+  }
 }
 
 List<int> convertBtoaAtob(List<int> data) {
@@ -333,9 +333,21 @@ void testGenerateEncodeDecodeHashKey() {
   }
 }
 
+int detectAlgoCode() {
+  String codeFile = '/tmp/code.txt';
+  int algoCode = 0;
+  if (File(codeFile).existsSync()) {
+    String v = File(codeFile).readAsStringSync();
+    if (v.isNotEmpty) {
+      algoCode = int.parse(v);
+    }
+  }
+  return algoCode;
+}
+
 void main() {
   // testBtoaAtob();
   // testGenerateCheckCompactExtendedSignId();
-  testGenerateEncodeDecodeHashKey();
-  testDirectoryEncodingDecoding();
+  // testGenerateEncodeDecodeHashKey();
+  testDirectoryEncodingDecoding(detectAlgoCode());
 }

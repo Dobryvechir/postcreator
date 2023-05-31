@@ -142,9 +142,18 @@ String encodeByHashKeyForString(String data, List<int> key, List<int> id) {
   return resData;
 }
 
+List<int> directConvertUint8ToIntList(Uint8List src) {
+  int n = src.length;
+  List<int> res = List.filled(n, 0);
+  for (int i = 0; i < n; i++) {
+    res[i] = src[i];
+  }
+  return res;
+}
+
 Uint8List encodeByHashKeyForUint8List(
     Uint8List data, List<int> key, List<int> id) {
-  List<int> codes = utf8Dec.convert(data).codeUnits;
+  List<int> codes = directConvertUint8ToIntList(data);
   List<int> res = encodeByHashKey(codes, key, id);
   String resData = convertBtoa(res);
   return Uint8List.fromList(resData.codeUnits);
@@ -357,7 +366,7 @@ int calculatePadding(int minSize, int base) {
 List<int> getDecodeKeyByEncodeKey(List<int> key) {
   int n = key.length;
   List<int> res = List.filled(n, 0);
-  int m = n ~/ 2;
+  int m = n >> 1;
   for (var i = 0; i < m; i++) {
     res[key[i]] = i;
     res[key[i] + m] = key[i + m];
@@ -384,7 +393,7 @@ List<int> convertAtob(String data, int unitSize) {
   for (var i = 0; i < n; i++) {
     int cd = codes[i];
     if (cd < 32 || cd >= 128 || conv[cd] < 0) {
-      throw Exception("unexpected character {cd}");
+      throw Exception("unexpected character $cd");
     }
     rest |= conv[cd] << bits;
     bits += 6;
@@ -454,7 +463,7 @@ List<int> decodeHashKey(String data) {
   for (; pos < base; i++) {
     int cd = codes[i];
     if (cd < 32 || cd >= 128 || conv[cd] < 0) {
-      throw Exception("unexpected character {cd}");
+      throw Exception("unexpected character $cd");
     }
     rest |= conv[cd] << bits;
     bits += 6;
@@ -467,7 +476,7 @@ List<int> decodeHashKey(String data) {
   for (; i < n; i++) {
     int cd = codes[i];
     if (cd < 32 || cd >= 128 || conv[cd] < 0) {
-      throw Exception("unexpected character {cd}");
+      throw Exception("unexpected character $cd");
     }
     rest |= conv[cd] << bits;
     bits += 6;
@@ -567,5 +576,13 @@ String restoreStringByAlgo(List<int> src, int posStart, int posEnd, int algo) {
     posStart = 0;
     posEnd = n;
   }
-  return String.fromCharCodes(res, posStart, posEnd);
+  List<int> origCodes = res.sublist(posStart, posEnd);
+  String orig = "";
+  try {
+    orig = utf8.decode(origCodes);
+  } on Exception {
+    print("not good utf8");
+    orig = String.fromCharCodes(origCodes);
+  }
+  return orig;
 }
