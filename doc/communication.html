@@ -1,0 +1,148 @@
+<div>
+UNISUPPORT:
+P-php,D-dart,G-go
+</div>
+<pre>
+MARKS:
+- will not be used at all
+- 0 started draft
+- 1 initial development
+- 2 finalizing development
+- 3 completed, testing but fix is required
+- 4 completed, testing but no problems yet 
+- 5 completed and tested fine  
+</pre>
+<div>
+P: C:\wp\home\sponsorschoose\f\
+G: crypto
+</div>
+<h3>UNIAPI:</h3>
+<div>
+<pre>
+D5 P0 G0
+D: ioComposeRequestString(Map&lt;String,String&gt; params)
+R: string composed of key=escaped utf8 value&key1=...
+</pre>
+</div>
+<div>
+<pre>
+D5 P0 G0
+D: ioDeComposeRequestString(String params)
+R: Map&lt;String,String&gt; params, which was encoded as key=escaped utf8 value&key1=...
+</pre>
+</div>
+
+<div>
+<pre>
+D0 P0 G0
+   params is as follows   
+     String urlBefore, 
+     String urlAfter, 
+     String version, 
+     String signIn, 
+     String signOut 
+D: ioHandshakePrimary(String hand, String shake, String mainId, Map&lt;String,String&gt; params)
+   makes http request: d=data, e=mainId  
+   with response: e=error, d=data 
+R: Map&lt;String,String&gt; parameters or exception in case of error
+    String tempId,
+    timestamp tempEnd,
+    String tempSignIn
+    String tempSignOut
+    String tempCode
+    String path = path to work
+</pre>
+</div>
+<div>
+<pre>
+D0 P0 G0
+   params is as follows   
+     String urlBefore, 
+     String urlAfter, 
+     String version, 
+     String signIn, 
+     String signOut 
+D: ioHandshakeSecondary(Map&lt;String,String&gt; primaryParams,Map&lt;String,String&gt; secondaryParams)
+   makes http request: d=data, e=tempCode 
+   with response: e=error (especially 'login', if new login is required), d=data 
+R: Map&lt;String,String&gt; parameters or exception in case of error
+    String mainId,
+    String tempId,
+    timestamp tempEnd,
+    String tempSignIn
+    String tempSignOut
+    String tempCode
+    String path = path to work
+</pre>
+</div>
+<div>
+<pre>
+D0 P0 G0
+D: ioExecute(Map&lt;String,String&gt; executeParams,String executePath,Map&lt;String,String&gt; primaryParams,Map&lt;String,String&gt; secondaryParams)
+R: Map&lt;String,String&gt; results or exception if error
+</pre>
+</div>
+
+<style>
+.D5-P0 {
+  background-color: orange;
+}
+.D5-P1 {
+  background-color: yellow;
+}
+.D5-P2 {
+  background-color: #ff99ff;
+}
+.D5-P3 {
+  background-color: #00ffff;
+}
+
+.D0-P0 {
+  background-color: red;
+  color: white;
+}
+.D4-P0, .D5-P4 {
+  background-color: blue;
+  color: yellow;
+}
+.D5-P5 {
+  background-color: green;
+  color: yellow;
+}
+</style>
+<script>
+function readDPG(s) {
+   if (typeof s!=='string') {
+      return null;
+   }
+   s = s.trim();
+   if (!s || !s.length || s.length<8) {
+     return null;
+   }
+   if (s[0]==='D' && s[2]===' ' && s[3]==='P') {
+      s = s.substring(0,2) + '-' + s.substring(3,5);
+      s[2] = '-';
+      return s;
+   }
+   return null;
+}
+function markPre(parent){
+   const n = parent && parent.childNodes && parent.childNodes.length;
+   if (!n) {
+       return;
+   }
+   for(var i=0;i<n;i++) {
+      const node = parent.childNodes[i];
+      if (node) {
+          v = readDPG(node.innerHTML);
+          if (v) {
+            node.className = v; 
+          } else {
+            markPre(node);
+          }
+      }        
+   }
+   
+}
+markPre(document.body)
+</script>
