@@ -1,3 +1,5 @@
+import "simple_keys.dart";
+
 String ioEscapeValue(String src) {
   int p1 = src.indexOf('&');
   int p2 = src.indexOf('\\');
@@ -93,5 +95,44 @@ Map<String, String> ioDeComposeRequestString(String params) {
       res[key] = value;
     }
   }
+  return res;
+}
+
+List<String> prepareHandshakePrimaryRequest(
+    String shake, String hand, Map<String, String> params) {
+  var keySizeStr = params['keySize'];
+  var keySize = keySizeStr == null ? 0 : int.parse(keySizeStr);
+  if (keySize < 2) {
+    keySize = 16;
+  }
+  List<int> key = generateHashKey(keySize);
+  String keyStr = encodeHashKey(key);
+  Map<String, String> p = {};
+  p['s'] = shake;
+  p['h'] = hand;
+  p['k'] = keyStr;
+  String src = ioComposeRequestString(p);
+  List<int> currentKey = decodeHashKey(params['hdKey']!);
+  List<int> currentId = makeCompactSignId(params['signIn']!);
+  String data = encodeByHashKeyForString(src, currentKey, currentId);
+  String hp = params['handshakePrimaryUrl'] == null
+      ? 'hp'
+      : params['handshakePrimaryUrl']!;
+  return [data, params['version']!, hp, keyStr];
+}
+
+Map<String, String> prepareIoResponse(
+    String data, List<int> key, List<int> id) {
+  String r = decodeByHashKey(data, key, id);
+  Map<String, String> res = ioDeComposeRequestString(r);
+  return res;
+}
+
+Map<String, String> prepareHandshakePrimaryResponse(
+    String data, String keyStr, Map<String, String> params) {
+  List<int> key = getDecodeKeyByEncodeKey(decodeHashKey(params['hdKey']!));
+  List<int> id = makeCompactSignId(params['signOut']!);
+  Map<String, String> res = prepareIoResponse(data, key, id);
+  res['hdKey'] = keyStr;
   return res;
 }

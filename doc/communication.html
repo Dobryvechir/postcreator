@@ -19,14 +19,14 @@ G: crypto
 <h3>UNIAPI:</h3>
 <div>
 <pre>
-D5 P0 G0
+D5 P5 G0
 D: ioComposeRequestString(Map&lt;String,String&gt; params)
 R: string composed of key=escaped utf8 value&key1=...
 </pre>
 </div>
 <div>
 <pre>
-D5 P0 G0
+D5 P5 G0
 D: ioDeComposeRequestString(String params)
 R: Map&lt;String,String&gt; params, which was encoded as key=escaped utf8 value&key1=...
 </pre>
@@ -40,9 +40,16 @@ D0 P0 G0
      String urlAfter, 
      String version, 
      String signIn, 
-     String signOut 
-D: ioHandshakePrimary(String hand, String shake, String mainId, Map&lt;String,String&gt; params)
-   makes http request: d=data, e=mainId  
+     String signOut,
+     String hdKey,
+     String keySize, // optional default=16
+     String handshakePrimaryUrl, // optional, default = 'hp'
+     String handshakeSecondaryUrl, // optional, default = 'hs'
+     String exchangeUrl, // optional, default = 'io'
+
+ 
+D: ioHandshakePrimary(String hand, String shake, Map&lt;String,String&gt; params)
+   makes http request: d=data, e=version  
    with response: e=error, d=data 
 R: Map&lt;String,String&gt; parameters or exception in case of error
     String tempId,
