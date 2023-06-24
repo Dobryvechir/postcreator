@@ -36,17 +36,18 @@ R: Map&lt;String,String&gt; params, which was encoded as key=escaped utf8 value&
 <pre>
 D0 P0 G0
    params is as follows   
-     String urlBefore, 
-     String urlAfter, 
-     String version, 
-     String signIn, 
-     String signOut,
-     String hdKey,
-     String keySize, // optional default=16
-     String handshakePrimaryUrl, // optional, default = 'hp'
-     String handshakeSecondaryUrl, // optional, default = 'hs'
-     String exchangeUrl, // optional, default = 'io'
-
+     String urlBefore; 
+     String urlAfter; 
+     String version; 
+     String signIn;
+     String signOut;
+     String hdKey;
+     String keySize; // optional default=16
+     String handshakePrimaryUrl; // optional, default = 'hp'
+     String handshakeSecondaryUrl; // optional, default = 'hs'
+     String exchangeUrl; // optional, default = 'io'
+     String stKey;
+     String stSign;
  
 D: ioHandshakePrimary(String hand, String shake, Map&lt;String,String&gt; params)
    makes http request: d=data, e=version  

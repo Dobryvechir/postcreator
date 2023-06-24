@@ -1,0 +1,32 @@
+<h3>Files stored</h3>
+<ul>
+  <li>
+      <h4>snc.txt</h4>
+      <pre>
+         Serial number of the computer, which is generated randomly and is assumed to be unique.
+         This number is sent in the primary io case and should be used by the server to identify 
+          the same computer. 
+         In case of removal of the primary token because of exceeding the limit, this number should
+          be the first as the best criteria.
+      </pre>
+  </li>
+  <li>
+      <h4>common.bin</h4>
+      <pre>
+          The map of elements as follows:
+               String urlBefore; 
+     String urlAfter; 
+     String version; 
+     String signIn;
+     String signOut;
+     String hdKey;
+     String keySize; // optional default=16
+     String handshakePrimaryUrl; // optional, default = 'hp'
+     String handshakeSecondaryUrl; // optional, default = 'hs'
+     String exchangeUrl; // optional, default = 'io'
+     String stKey;
+     String stSign;
+
+      </pre>
+  </li>
+</ul>

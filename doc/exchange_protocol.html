@@ -1,0 +1,55 @@
+<h1>Primary handshake</h1>
+<div class="request">
+ <h2>Request</h2>
+ <pre>
+ Primary handshake
+  e= VERSION
+  d= Encoded block:
+    Data:
+     s = shake (name)
+     h = hand (haslo)
+     k = suggested hash key
+     n = serial number code
+    Encoding params: PRIMARY HANDSHAKE KEY (server: for specific VERSION, client: hdkey)
+                     PRIMARY SIGN-IN ID (server: for specific VERSION, client: signIn)
+    Expected logic: if "n" is the same, the customer point entry is rewritten, if "n" is different
+        the oldest customer point entry is rewritten if the number of entries >=N (for example, 50) for specific VERSION
+        and the error is thrown, if the number of such rewrites is more than M per day (for example, 20) for specific VERSION                       
+ </pre>
+</div>
+<div class="response">
+  <h2>Response</h2>
+  <pre>
+  Primary handshake
+   ["Encoded block"]
+   Special cases: if "Encoded block" contains spaces, it is a user message of error
+                  if "Encoded block" is less than 128 without spaces, it is a code of error 
+          Also if the format is different, it is a system error
+          ["LOGIN"] means the login/ password wrong 
+          All other errors mean the system error and it means
+            "Check your network and repeat your request in some time"
+    Data:
+     rfrKey = hash key for second handshake
+     rfrSignOut = sign-out id for second handshake
+     rfrSignIn = sign-in id for second handshake
+     ioKey = hash key for input/output
+     ioSignIn = sign-in id for input/output
+     ioSignOut = signt-out id for input/output
+     userToken = digital index for finding this entry ("e" parameter for further requests)
+     Encoding params: hash key suggested in request (server: for specific CLIENT POINT, client: hdkey)
+                      PRIMARY SIGN-OUT ID (server: for specific VERSION, client: signOut)
+  </pre>
+ </div>
+ <style>
+  div,body {padding:0;margin:0;}
+  .request {
+     background-color: #0057b8; 
+     color: white;
+     padding: 10px;
+  }
+  .response {
+     background-color: #ffd700;
+     color: #333;
+     padding: 10px;
+  }
+ </style>

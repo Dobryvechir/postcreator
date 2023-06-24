@@ -98,23 +98,36 @@ Map<String, String> ioDeComposeRequestString(String params) {
   return res;
 }
 
+String encodeStringMapComplete(
+    Map<String, String> mapSrc, String key, String sign) {
+  String src = ioComposeRequestString(mapSrc);
+  String data = encodeByHashKeyComplete(src, key, sign);
+  return data;
+}
+
+Map<String, String> decodeStringMapComplete(
+    String src, String key, String sign) {
+  String data = encodeByHashKeyComplete(src, key, sign);
+  Map<String, String> mapSrc = ioDeComposeRequestString(data);
+  return mapSrc;
+}
+
 List<String> prepareHandshakePrimaryRequest(
-    String shake, String hand, Map<String, String> params) {
+    String shake, String hand, String snc, Map<String, String> params) {
   var keySizeStr = params['keySize'];
   var keySize = keySizeStr == null ? 0 : int.parse(keySizeStr);
   if (keySize < 2) {
     keySize = 16;
   }
-  List<int> key = generateHashKey(keySize);
+  List<int> key = generateHashKey(1 << keySize);
   String keyStr = encodeHashKey(key);
-  Map<String, String> p = {};
-  p['s'] = shake;
-  p['h'] = hand;
-  p['k'] = keyStr;
-  String src = ioComposeRequestString(p);
-  List<int> currentKey = decodeHashKey(params['hdKey']!);
-  List<int> currentId = makeCompactSignId(params['signIn']!);
-  String data = encodeByHashKeyForString(src, currentKey, currentId);
+  Map<String, String> p = {
+    's': shake,
+    'h': hand,
+    'k': keyStr,
+    'n': snc,
+  };
+  String data = encodeStringMapComplete(p, params['hdKey']!, params['signIn']!);
   String hp = params['handshakePrimaryUrl'] == null
       ? 'hp'
       : params['handshakePrimaryUrl']!;
@@ -130,9 +143,49 @@ Map<String, String> prepareIoResponse(
 
 Map<String, String> prepareHandshakePrimaryResponse(
     String data, String keyStr, Map<String, String> params) {
-  List<int> key = getDecodeKeyByEncodeKey(decodeHashKey(params['hdKey']!));
-  List<int> id = makeCompactSignId(params['signOut']!);
-  Map<String, String> res = prepareIoResponse(data, key, id);
-  res['hdKey'] = keyStr;
+  Map<String, String> res =
+      decodeStringMapComplete(data, params['hdKey']!, params['signOut']!);
+  res['ioKey'] = keyStr;
   return res;
+}
+
+List<String> prepareHandshakeSecondaryRequest(
+    Map<String, String> sys, Map<String, String> pers) {
+  var keySizeStr = sys['keySize'];
+  var keySize = keySizeStr == null ? 0 : int.parse(keySizeStr);
+  if (keySize < 2) {
+    keySize = 16;
+  }
+  List<int> key = generateHashKey(1 << keySize);
+  String keyStr = encodeHashKey(key);
+  Map<String, String> p = {};
+  p['k'] = keyStr;
+  String data = encodeStringMapComplete(p, pers['rfrKey']!, pers['rfrSignIn']!);
+  String hp = sys['handshakeSecondaryUrl'] == null
+      ? 'hp'
+      : sys['handshakeSecondaryUrl']!;
+  return [data, sys['version']!, hp, keyStr];
+}
+
+Map<String, String> prepareHandshakeSecondaryResponse(
+    String data, String keyStr, Map<String, String> pers) {
+  Map<String, String> res =
+      decodeStringMapComplete(data, pers['rfrKey']!, pers['rfrSignOut']!);
+  res['ioKey'] = keyStr;
+  return res;
+}
+
+bool checkUserToken(String token) {
+  int n = token.length;
+  if (n == 0) {
+    return false;
+  }
+  List<int> codes = token.codeUnits;
+  for (int i = 0; i < n; i++) {
+    int c = codes[i];
+    if (!(c >= 48 && c < 57)) {
+      return false;
+    }
+  }
+  return true;
 }

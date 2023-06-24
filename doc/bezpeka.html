@@ -37,6 +37,15 @@ R: true if the hashkey well formed for base
 </div>
 <div>
 <pre>
+D5 P4 G0
+checks the key of base size where base = 256,512,1024,2048,4096,... 
+D: bool checkHashKeyComplete(String key)
+P: function checkHashKeyComplete($key)
+R: true if the hashkey well formed for any valid base
+</pre>
+</div>
+<div>
+<pre>
 D5 P5 G0
 encodes the key for saving and transfer (base = 256,512,1024,2048,4096,...) 
 D: String encodeHashKey(List&lt;int&gt; src)
@@ -124,6 +133,22 @@ P: function getDecodeKeyByEncodeKey($key)
 D5 P5 G0
 D: String decodeByHashKey(String data, List&lt;int&gt; key, List&lt;int&gt; id)
 P: function decodeByHashKey($data, $key, $id)
+R: decoded original string
+</pre>
+</div>
+<div>
+<pre>
+D5 P4 G0
+D: String encodeByHashKeyComplete(String src, String key, String sign)
+P: function decodeByHashKeyComplete($data, $key, $sign)
+R: encoded original string
+</pre>
+</div>
+<div>
+<pre>
+D5 P4 G0
+D: String decodeByHashKeyComplete(String src, String key, String sign)
+P: function decodeByHashKeyComplete($data, $key, $sign)
 R: decoded original string
 </pre>
 </div>

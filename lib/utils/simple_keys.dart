@@ -586,3 +586,27 @@ String restoreStringByAlgo(List<int> src, int posStart, int posEnd, int algo) {
   }
   return orig;
 }
+
+String encodeByHashKeyComplete(String src, String key, String sign) {
+  List<int> currentKey = decodeHashKey(key);
+  List<int> currentId = makeCompactSignId(sign);
+  String data = encodeByHashKeyForString(src, currentKey, currentId);
+  return data;
+}
+
+String decodeByHashKeyComplete(String data, String key, String sign) {
+  List<int> currentKey = getDecodeKeyByEncodeKey(decodeHashKey(key));
+  List<int> currentSign = makeCompactSignId(sign);
+  String res = decodeByHashKey(data, currentKey, currentSign);
+  return res;
+}
+
+bool checkHashKeyComplete(String key) {
+  try {
+    List<int> hashKey = decodeHashKey(key);
+    int base = evaluateBasisByBase(hashKey.length >> 1);
+    return base >= 8 && checkHashKey(hashKey, base);
+  } on Exception {
+    return false;
+  }
+}
