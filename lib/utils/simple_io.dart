@@ -183,7 +183,7 @@ bool checkUserToken(String token) {
   List<int> codes = token.codeUnits;
   for (int i = 0; i < n; i++) {
     int c = codes[i];
-    if (!(c >= 48 && c < 57)) {
+    if (!(c >= 48 && c <= 57)) {
       return false;
     }
   }
