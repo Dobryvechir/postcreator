@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:postcreator/utils/exchange_io.dart';
 
 Map<String, String> ioReadMapFromFile(String fileName) {
@@ -68,17 +69,19 @@ String compareMapEquality(Map<String, String> src, Map<String, String> dst,
   return sb.toString();
 }
 
-void testHP() async {
+Future<int> testHP() async {
   String srcFile = '/tmp/mapHa_ndtrykk.txt';
   String resFile = '/tmp/ergebnis_resultat_wynik.txt';
   Map<String, String> src = ioReadMapFromFile(srcFile);
-  String haslo = src['ha_nde']; 
-  String shake = src['druck'];
+  String haslo = src['ha_nde']!;
+  String shake = src['druck']!;
   String result = await ioHandshakePrimary(haslo, shake);
   File(resFile).writeAsStringSync(result);
   print('hp ok');
+  return 0;
 }
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await testHP();
 }

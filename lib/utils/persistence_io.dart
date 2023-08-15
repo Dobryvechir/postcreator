@@ -1,4 +1,5 @@
 import "dart:io";
+import "dart:io" show Platform;
 import "package:path_provider/path_provider.dart";
 import 'package:path/path.dart' as p;
 
@@ -47,10 +48,25 @@ Future<String> getStoreFilePath(String name) async {
   return fullPath;
 }
 
+Future<String> getStoreWholePathDesktop() async {
+  Map<String, String> env = Platform.environment;
+  String name = env["APPDATA"] ?? "";
+  name += "/DvSponsorschooseOrg";
+  bool exists = await Directory(name).exists();
+  if (!exists) {
+    await Directory(name).create(recursive: true);
+  }
+  return name;
+}
+
 Future<String> getStoreWholePath() async {
   if (documentsDirectory == null) {
-    final directory = await getApplicationDocumentsDirectory();
-    documentsDirectory = directory.path;
+    if (Platform.isWindows) {
+      documentsDirectory = await getStoreWholePathDesktop();
+    } else {
+      final directory = await getApplicationDocumentsDirectory();
+      documentsDirectory = directory.path;
+    }
   }
   return documentsDirectory!;
 }
